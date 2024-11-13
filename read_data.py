@@ -30,9 +30,8 @@ def run_async_simple_client():
     assert client.connected 
 
     voltage_RMS_address = 104 # 139-142
-    current_RMS_address = 143 # 143 - 146 
-    active_power_address = 147 #147 - 150
-    status_address = 0 # no point in querying, if other measurements exist
+    current_RMS_address = 106 # 143 - 146 
+    active_power_address = 108 #147 - 150
     try:
 #       read every measurement necessary
 #       DC meters 
@@ -40,28 +39,35 @@ def run_async_simple_client():
 
 #        meter89 = client.read_holding_registers(voltage_RMS_address, 10 , 89) 
         meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
-        print("Reading meter 89", meter89_voltage)
+        meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
+        meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
+        print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
 
-        meter21 = client.read_holding_registers(104, 10 ,21) 
-        print("Reading meter 21", meter21.registers)
+        meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
+        meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
+        meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)
+        print(f"Reading meter 21, voltage {meter21_voltage}, current {meter21_current}, power {meter21_power}")
+        
+        meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
+        meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
+        meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
+        print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
-        meter83 = client.read_holding_registers(start_address, 10 ,83) 
-        print("Reading meter 21", meter83.registers)
 
-        meter57 = client.read_holding_registers(start_address, 10 ,57) 
-        print("Reading meter 57", meter57.registers)
+        meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
+        meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
+        meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
+        print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
+        #meter57 = client.read_holding_registers(start_address, 10 ,57) 
 
-        meter26 = client.read_holding_registers(start_address, 10 ,26) 
-        print("Reading meter 26", meter26.registers)
-#        meter43 = client.read_holding_registers(start_address, 10 ,43)
-
-#        print("ReadingDEBUG meter 43", meter43.registers)
-#        meter17 = client.read_holding_registers(start_address, 10 ,17) 
-#        print("ReadingDEBUG meter 17", meter17.registers)
+        meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
+        meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
+        meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
+        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
+        #        meter26 = client.read_holding_registers(start_address, 10 ,26) 
         print("All DC meters are done")
 #       AC meters 
-
-#        result  = client.read_holding_registers(start_address, 10 ,unit_id)#i have no idea what will be red 
+        
         
 
             
