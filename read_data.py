@@ -16,6 +16,9 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
     result = struct.unpack('>f', struct.pack('>I', MSW_and_LSW_combined))[0]
     return result
 
+def student_conversion_into_float(client, adress1, address2, id):
+
+
 def run_async_simple_client():
     default_gateway_ip = '10.0.10.9'
     server_port = 502
@@ -28,10 +31,26 @@ def run_async_simple_client():
     client.connect()
     #test if the client has been connnected 
     assert client.connected 
-
+    
+    #non student made DC meters 
     voltage_RMS_address = 104 # 139-142
     current_RMS_address = 106 # 143 - 146 
     active_power_address = 108 #147 - 150
+    #student made DC meter
+
+    student_voltage_RMS_address1 = 1 # 139-142
+    student_current_RMS_address1 = 2 # 143 - 146 
+    student_active_power_address1 = 3 #147 - 150
+
+
+    student_voltage_RMS_address2 = 1 # 139-142
+    student_current_RMS_address2 = 2 # 143 - 146 
+    student_active_power_address2 = 3 #147 - 150
+    #AC meter
+
+
+
+
     try:
 #       read every measurement necessary
 #       DC meters 
@@ -65,13 +84,19 @@ def run_async_simple_client():
         meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
         print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
         #        meter26 = client.read_holding_registers(start_address, 10 ,26) 
+        # first student meter has id of 3 and baudrate 9600
+        
+        meter3_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address,3)
+        meter3_current = convert_MSW_and_LSW_into_float(client, current_RMS_address,3)
+        meter3_power =  convert_MSW_and_LSW_into_float(client, active_power_address,3)
+        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
         print("All DC meters are done")
 #       AC meters 
+        #AC meter has baudrate 9600 and slave id 50 
         
         
 
             
-        print("past client read holding registers")
         time.sleep(1)
     except ModbusException as exc:
         print(f"Recieved exception {exc}")
