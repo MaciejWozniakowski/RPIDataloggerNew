@@ -11,11 +11,6 @@ from pymodbus import (
 client = ModbusTcpClient('10.0.10.9', port = 502)
 
 if client.connect():
-    xd = client.read_holding_registers(0,1,89)
-    if not isinstance(xd, ModbusIOException):
-        print("true")
-#    xd1 = client.read_holding_registers(0,1,252)
-    print(xd.registers)
 
     for device_id in range(0, 256):  # Scan IDs from 1 to 255
         print(device_id)
