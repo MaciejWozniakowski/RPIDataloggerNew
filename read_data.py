@@ -9,6 +9,14 @@ from pymodbus import (
     pymodbus_apply_logging_config,
 ) 
 import time 
+
+## 57 zyje
+## 26 zyje
+## 83 zyje
+## 21 zyje
+## 89 zyje
+
+
 #combines MSW and LSW into real desired float value of 
 def convert_MSW_and_LSW_into_float(client ,address,  id):
     if not ModbusIOException:
@@ -21,17 +29,41 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
 #values gathered from the student meter each require different encoding
 #hence the functions below
 
-def student_voltage_conversion_into_float_RMS(client, adress1, address2, id):
-    pass
+def student_voltage_conversion_into_float(client, address, id):
+    #this needs debugging
+    if not ModbusIOException:
+        readings = client.read_holding_registers(address,2 , id)
+        address1 = readings.registers[0]
+        address2 = readings.registers[2]
+        r = address1 & 0x3FF
+        s = address1 & 0x8000
+        m = address1 & 0x4000
+        d = address2
+        f = r + d/100 if d>0 else r
+        f = f if m == 0 else f/1000
+        return f if s == 0 else f*-1
+    else: 
+        return ModbusIOException
 
-def student_current_conversion_into_float_RMS(client, adress1, address2, id):
-    pass
+def student_current_conversion_into_float(client, address, id):
+    readings = client.read_holding_registers(address, 1, id)
+    address = radings.registers[0]
 
-def student_active_power_conversion_into_float(client, adress1, address2, id):
+    s = address & 0x8000 # check sign 
+    m = address & 0x4000 # check if mV or V, m stands for milli
+    f = (address & 0x3FFF)/100
+    if(s == 1):
+        f = f* -1
+    if(m == 1):
+        f = f/1000
+    return f
+
+def student_active_power_conversion_into_float(client, address1, address2, id):
     pass
 
 def run_async_simple_client():
-    default_gateway_ip = '10.0.10.9'
+    default_gateway_ip = '10.0.10.14'
+
     server_port = 502
 
     client = ModbusTcpClient(default_gateway_ip, port = server_port)
@@ -83,7 +115,8 @@ def run_async_simple_client():
         meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
         meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
         print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
-
+        read89 = client.read_holding_registers(104, 2 ,89)
+        print(read89)
         meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
         meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
         meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)

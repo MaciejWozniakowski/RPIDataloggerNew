@@ -22,3 +22,6 @@ if client.connect():
     client.close()
 else:
     print("Failed to connect to Modbus network.")
+
+
+
