@@ -1,9 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+
+/*
+Future<List<Map<String, dynamic>>> fetchData() async {
+  // Open database connection
+  final database = openDatabase(
+    join(await getDatabasesPath(), 'example.db'),
+  );
+
+  // Execute query
+  final db = await database;
+  return await db.query('your_table_name');
+}
+
+
+Future<DataTable> buildTable() async {
+  List<Map<String, dynamic>> queryResult = await fetchData();
+  List<DataRow> rows = queryResult.map((data) {
+    return DataRow(
+      cells: data.values.map((value) => DataCell(Text(value.toString()))).toList(),
+    );
+  }).toList();
+
+  return DataTable(
+    columns: queryResult.isEmpty
+        ? []
+        : queryResult.first.keys.map((key) => DataColumn(label: Text(key))).toList(),
+    rows: rows,
+  );
+}
+
+class SQLTableScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('SQL Data Table'),
+      ),
+      body: FutureBuilder<DataTable>(
+        future: buildTable(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal, // For horizontal scrolling
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical, // For vertical scrolling
+                child: snapshot.data,
+              ),
+            );
+          } else {
+            return Center(child: Text('No data available'));
+          }
+        },
+      ),
+    );
+  }
+}
+*/
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,7 +76,7 @@ class MyApp extends StatelessWidget {
           title: Text('Datalogger Query Web App'),
         ),
         body: DateDropdowns(),
-      ),
+      )
     );
   }
 }
@@ -136,7 +199,7 @@ class _DateDropdownsState extends State<DateDropdowns> {
               color: Colors.grey[200],
               child: Center(
                 child: Text(
-                  "Table Placeholder",
+                  "Tutaj będzie tabela z pomiarami ",
                   style: TextStyle(fontSize: 20, color: Colors.black54),
                 ),
               ),
