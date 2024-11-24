@@ -3,51 +3,41 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-Future main() async {
+Future main() async{
   sqfliteFfiInit();
-
+  
   databaseFactory = databaseFactoryFfi;
   runApp(MyApp());
 }
 
-Future<List<Map<String, dynamic>>> fetchData(String selectedMeter) async {
+Future<List<Map<String, dynamic>>> fetchData() async {
   // Open database connection
+//  
   final database = openDatabase(
-    join(await getDatabasesPath(), 'data_from_all_meters.db'),
+    join(await getDatabasesPath(), '../../data_from_all_meters.db'),
   );
 
-  // Execute query with selectedMeter as the table name
+  // Execute query
   final db = await database;
-  return await db.query(selectedMeter); // Use selectedMeter for the table name
+  return await db.query('your_table_name');
 }
-Future<DataTable> buildTable(String selectedMeter) async {
-  List<Map<String, dynamic>> queryResult = await fetchData(selectedMeter);
 
-  // If there is no data, we return a DataTable with a placeholder column
-  if (queryResult.isEmpty) {
-    return DataTable(
-      columns: [
-        DataColumn(label: Text('No Data Available')),
-      ],
-      rows: [],
-    );
-  }
-
-  // Map query result to DataRows
+Future<DataTable> buildTable() async {
+  List<Map<String, dynamic>> queryResult = await fetchData();
   List<DataRow> rows = queryResult.map((data) {
     return DataRow(
       cells: data.values.map((value) => DataCell(Text(value.toString()))).toList(),
     );
   }).toList();
 
-  // Return DataTable with the actual columns and rows
   return DataTable(
-    columns: queryResult.first.keys
-        .map((key) => DataColumn(label: Text(key))) // Create columns dynamically
-        .toList(),
+    columns: queryResult.isEmpty
+        ? []
+        : queryResult.first.keys.map((key) => DataColumn(label: Text(key))).toList(),
     rows: rows,
   );
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -73,16 +63,7 @@ class _DateDropdownsState extends State<DateDropdowns> {
   DateTime? selectedDate2;
   String? selectedMeter;
 
-  final List<String> meters = [
-    "DCmeter_89",
-    "DCmeter_21",
-    "DCmeter_83",
-    "DCmeter_57",
-    "DCmeter_26",
-    "DCmeter_3_1",
-    "DCmeter_3_2", // Fixed a duplicate meter entry
-    "ACmeter_50"
-  ];
+  final List<String> meters = ["DCmeter_89", "DCmeter_21", "DCmeter_83", "DCmeter_57", "DCmeter_26", "DCmeter_3_1", "DCmeter_3_1", "ACmeter_50"];
 
   @override
   void initState() {
@@ -187,9 +168,7 @@ class _DateDropdownsState extends State<DateDropdowns> {
           // Replacing placeholder with the DataTable
           Expanded(
             child: FutureBuilder<DataTable>(
-              future: selectedMeter != null
-                  ? buildTable(selectedMeter!) // Pass selectedMeter as argument
-                  : Future.value(DataTable(columns: [], rows: [])), // Return an empty DataTable if no meter is selected
+              future: buildTable(), // Call the buildTable function to fetch and display the table
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -214,3 +193,4 @@ class _DateDropdownsState extends State<DateDropdowns> {
     );
   }
 }
+
