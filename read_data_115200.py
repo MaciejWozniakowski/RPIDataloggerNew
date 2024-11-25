@@ -149,7 +149,7 @@ def run_and_read_client_115200():
         #print(student_meter_voltage1,"some garbage DC value, just for tests")
         
         print("All DC meters are done")
-        return meter_89_entry, meter_21_entry, meter_83_entry, meter_57_entry, meter_26_entry 
+        return tuple(meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry) 
 #       AC meters 
         #AC meter has baudrate 9600 and slave id 50 
 
