@@ -3,214 +3,60 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-Future main() async {
-  sqfliteFfiInit();
+const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
 
-  databaseFactory = databaseFactoryFfi;
-  runApp(MyApp());
-}
+void main() => runApp(const DropdownButtonApp());
 
-Future<List<Map<String, dynamic>>> fetchData(String selectedMeter) async {
-  // Open database connection
-  final database = openDatabase(
-    join(await getDatabasesPath(), 'data_from_all_meters.db'),
-  );
+class DropdownButtonApp extends StatelessWidget {
+  const DropdownButtonApp({super.key});
 
-  // Execute query with selectedMeter as the table name
-  final db = await database;
-  return await db.query(selectedMeter); // Use selectedMeter for the table name
-}
-Future<DataTable> buildTable(String selectedMeter) async {
-  List<Map<String, dynamic>> queryResult = await fetchData(selectedMeter);
-
-  // If there is no data, we return a DataTable with a placeholder column
-  if (queryResult.isEmpty) {
-    return DataTable(
-      columns: [
-        DataColumn(label: Text('No Data Available')),
-      ],
-      rows: [],
-    );
-  }
-
-  // Map query result to DataRows
-  List<DataRow> rows = queryResult.map((data) {
-    return DataRow(
-      cells: data.values.map((value) => DataCell(Text(value.toString()))).toList(),
-    );
-  }).toList();
-
-  // Return DataTable with the actual columns and rows
-  return DataTable(
-    columns: queryResult.first.keys
-        .map((key) => DataColumn(label: Text(key))) // Create columns dynamically
-        .toList(),
-    rows: rows,
-  );
-}
-class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Datalogger Query Web App'),
+        appBar: AppBar(title: const Text('Datalogger Query App')),
+        body: const Center(
+          child: DropdownButtonExample(),
         ),
-        body: DateDropdowns(),
       ),
     );
   }
 }
 
-class DateDropdowns extends StatefulWidget {
+class DropdownButtonExample extends StatefulWidget {
+  const DropdownButtonExample({super.key});
+
   @override
-  _DateDropdownsState createState() => _DateDropdownsState();
+  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
 }
 
-class _DateDropdownsState extends State<DateDropdowns> {
-  List<DateTime> dateList = [];
-  DateTime? selectedDate1;
-  DateTime? selectedDate2;
-  String? selectedMeter;
-
-  final List<String> meters = [
-    "DCmeter_89",
-    "DCmeter_21",
-    "DCmeter_83",
-    "DCmeter_57",
-    "DCmeter_26",
-    "DCmeter_3_1",
-    "DCmeter_3_2", // Fixed a duplicate meter entry
-    "ACmeter_50"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _generateDateList();
-  }
-
-  void _generateDateList() {
-    DateTime today = DateTime.now();
-    for (int i = 0; i < 30; i++) {
-      dateList.add(today.add(Duration(days: i)));
-    }
-  }
+class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+  String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Meter Select"),
-              DropdownButton<String>(
-                value: selectedMeter,
-                items: meters.map((String meter) {
-                  return DropdownMenuItem<String>(
-                    value: meter,
-                    child: Text(meter, style: TextStyle(fontSize: 16)),
-                  );
-                }).toList(),
-                onChanged: (String? newMeter) {
-                  setState(() {
-                    selectedMeter = newMeter;
-                  });
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Select Start Date"),
-                  DropdownButton<DateTime>(
-                    value: selectedDate1,
-                    items: dateList.map((DateTime date) {
-                      return DropdownMenuItem<DateTime>(
-                        value: date,
-                        child: Text(
-                          "${date.day}/${date.month}/${date.year}",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (DateTime? newDate) {
-                      setState(() {
-                        selectedDate1 = newDate;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Select End Date"),
-                  DropdownButton<DateTime>(
-                    value: selectedDate2,
-                    items: dateList.map((DateTime date) {
-                      return DropdownMenuItem<DateTime>(
-                        value: date,
-                        child: Text(
-                          "${date.day}/${date.month}/${date.year}",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (DateTime? newDate) {
-                      setState(() {
-                        selectedDate2 = newDate;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          if (selectedDate1 != null && selectedDate2 != null)
-            Text(
-              "Selected Start Date: ${selectedDate1!.day}/${selectedDate1!.month}/${selectedDate1!.year}\n"
-              "Selected End Date: ${selectedDate2!.day}/${selectedDate2!.month}/${selectedDate2!.year}",
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          SizedBox(height: 20),
-          // Replacing placeholder with the DataTable
-          Expanded(
-            child: FutureBuilder<DataTable>(
-              future: selectedMeter != null
-                  ? buildTable(selectedMeter!) // Pass selectedMeter as argument
-                  : Future.value(DataTable(columns: [], rows: [])), // Return an empty DataTable if no meter is selected
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: snapshot.data!,
-                    ),
-                  );
-                } else {
-                  return const Center(child: Text('No data available'));
-                }
-              },
-            ),
-          ),
-        ],
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: const TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
       ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }
+
