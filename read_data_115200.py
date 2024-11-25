@@ -5,10 +5,11 @@ from pymodbus.client import ModbusTcpClient
 #from pymodbus.transaction import ModbusSocketFramer  
 from pymodbus import (
     ExceptionResponse,
+    #FramerType,
     ModbusException,
     pymodbus_apply_logging_config,
 ) 
-import time 
+import time
 
 ## 57 zyje
 ## 26 zyje
@@ -19,35 +20,31 @@ import time
 
 #combines MSW and LSW into real desired float value of 
 def convert_MSW_and_LSW_into_float(client ,address,  id):
-    if not ModbusIOException:
-   	    readings = client.read_holding_registers(address, 2, id)
-   	    MSW_and_LSW_combined = readings.registers[0] << 16 | readings.registers[1]
-   	    result = struct.unpack('>f', struct.pack('>I', MSW_and_LSW_combined))[0]
-   	    return result
-    else:
-        return ModbusIOException
+
+    readings = client.read_holding_registers(address, 2, id)
+    MSW_and_LSW_combined = readings.registers[0] << 16 | readings.registers[1]
+    result = struct.unpack('>f', struct.pack('>I', MSW_and_LSW_combined))[0]
+    return result
 #values gathered from the student meter each require different encoding
 #hence the functions below
 
 def student_voltage_conversion_into_float(client, address, id):
     #this needs debugging
-    if not ModbusIOException:
-        readings = client.read_holding_registers(address,2 , id)
-        address1 = readings.registers[0]
-        address2 = readings.registers[2]
-        r = address1 & 0x3FF
-        s = address1 & 0x8000
-        m = address1 & 0x4000
-        d = address2
-        f = r + d/100 if d>0 else r
-        f = f if m == 0 else f/1000
-        return f if s == 0 else f*-1
-    else: 
-        return ModbusIOException
+
+    readings = client.read_holding_registers(address,2 , id)
+    address1 = readings.registers[0]
+    address2 = readings.registers[2]
+    r = address1 & 0x3FF
+    s = address1 & 0x8000
+    m = address1 & 0x4000
+    d = address2
+    f = r + d/100 if d>0 else r
+    f = f if m == 0 else f/1000
+    return f if s == 0 else f*-1
 
 def student_current_conversion_into_float(client, address, id):
     readings = client.read_holding_registers(address, 1, id)
-    address = radings.registers[0]
+    address = readings.registers[0]
 
     s = address & 0x8000 # check sign 
     m = address & 0x4000 # check if mV or V, m stands for milli
@@ -61,12 +58,15 @@ def student_current_conversion_into_float(client, address, id):
 def student_active_power_conversion_into_float(client, address1, address2, id):
     pass
 
-def run_async_simple_client():
-    default_gateway_ip = '10.0.10.14'
+def run_and_read_client_115200():
+    default_gateway_ip = '10.0.10.8'
 
     server_port = 502
+    #framer = FramerType.SOCKET
 
-    client = ModbusTcpClient(default_gateway_ip, port = server_port)
+    client = ModbusTcpClient(default_gateway_ip, port = server_port, 
+                             #framer = framer
+                             )
 
     #start the client
     client.connect()
@@ -109,35 +109,36 @@ def run_async_simple_client():
 #       DC meters 
 #       For DC meters read only the Voltage RMS, Current RMS, Active Power, Total energy measurement, Status
 
-       # meter89 = client.read_holding_registers(voltage_RMS_address, 2 , 89) 
-        #print(meter89)
-        meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
-        meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
-        meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
-        print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
-        read89 = client.read_holding_registers(104, 2 ,89)
-        print(read89)
+        #meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
+        #meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
+        #meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
+        #print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
         meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
         meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
         meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)
+
+        meter_21_entry = [meter21_voltage, meter21_current,meter21_power]
+
+        #rr = client.read_holding_registers(104, 2, 21)
+        #print("meter21 = ", rr.registers)
         print(f"Reading meter 21, voltage {meter21_voltage}, current {meter21_current}, power {meter21_power}")
         
-        meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
-        meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
-        meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
-        print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
+        #meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
+        #meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
+        #meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
+        #print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
 
-        meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
-        meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
-        meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
-        print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
+        #meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
+        #meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
+        #meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
+        #print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
         #meter57 = client.read_holding_registers(start_address, 10 ,57) 
 
-        meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
-        meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
-        meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
-        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
+        #meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
+        #meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
+        #meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
+        #print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
         #        meter26 = client.read_holding_registers(start_address, 10 ,26) 
 
         # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
@@ -145,6 +146,7 @@ def run_async_simple_client():
         #print(student_meter_voltage1,"some garbage DC value, just for tests")
         
         print("All DC meters are done")
+        return meter_21_entry
 #       AC meters 
         #AC meter has baudrate 9600 and slave id 50 
 
@@ -160,7 +162,6 @@ def run_async_simple_client():
         client.close()
         return
 
-run_async_simple_client()
 
 
 

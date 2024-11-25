@@ -3,11 +3,6 @@ import struct
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.client import ModbusTcpClient
 #from pymodbus.transaction import ModbusSocketFramer  
-from pymodbus import (
-    ExceptionResponse,
-    ModbusException,
-    pymodbus_apply_logging_config,
-) 
 import time 
 #combines MSW and LSW into real desired float value of 
 def convert_MSW_and_LSW_into_float(client ,address,  id):
