@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 # Connect to SQLite database
 
@@ -15,21 +16,22 @@ def create_all_the_tables():
         connection.execute("CREATE TABLE IF NOT EXISTS ACmeter_50 (date TEXT PRIMARY KEY, U1Nrms REAL, U2Nrms REAL, U3Nrms REAL, I1rms REAL, I2rms REAL, I3rms REAL, P1rms REAL, P2rms REAL, P3rms REAL, Fgrid REAL, Ptotal REAL, Qtotal REAL, Stotal REAL);")
 
 # Sample data to insert (date, voltage, current, power)
-sample = ["2024-11-24 21:53:24", 1.0, 1.0, 1.0]
 
 # Insert data into DCmeter_89 table
 
-def add_DC_data(meter, entry): #this function adds entries to the database 
+def add_DC_data(meter,date, entry ): #this function adds entries to the database 
      
     connection = sqlite3.connect("data_from_all_meters.db")
     cursor = connection.cursor() 
-    query = f'INSERT INTO {meter} (date, voltage, current, power) VALUES (?, ?, ?, ?)'
-    print(query)
-    cursor.execute(query, entry)
+    #query = f'INSERT INTO {meter} (date, voltage, current, power) VALUES ({date}, {entry[0]}, {entry[1]},{entry[2]})'
+    query = f'INSERT INTO {meter} (date, voltage, current, power) VALUES (?,?, ?,?)'
+    complete_data = (date, entry[0], entry[1], entry[2])
+    cursor.execute(query, complete_data)
 
     # Commit the transaction to save changes
     connection.commit()
-
+    read = cursor.execute(f"SELECT * FROM {meter}")
+    print(read.fetchall()) 
     # Close the cursor and connection
     cursor.close()
     connection.close()
@@ -38,5 +40,8 @@ def list_all_available_dates():
     pass
 #    see how flutter queries .db
 
-create_all_the_tables()
-add_DC_data("DCmeter_89", sample)
+meter = "DCmeter_89"
+date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+entry = (1.0, 1.0, 1.0) 
+add_DC_data(meter, date, entry)
+
