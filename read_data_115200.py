@@ -1,4 +1,3 @@
-#from pymodbus.client import ModbusSerialClient
 import struct 
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.client import ModbusTcpClient
@@ -108,53 +107,47 @@ def run_and_read_client_115200():
 #       DC meters 
 #       For DC meters read only the Voltage RMS, Current RMS, Active Power, Total energy measurement, Status
 
-        #meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
-        #meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
-        #meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
+        meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
+        meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
+        meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
         meter_89_entry = ("DCmeter_89",meter89_voltage, meter89_current,meter89_power)
-        #print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
+        print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
+
         meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
         meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
         meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)
-
         meter_21_entry = ("DCmeter_21",meter21_voltage, meter21_current,meter21_power)
-
+        print(f"Reading meter 21, voltage {meter21_voltage}, current {meter21_current}, power {meter21_power}")
         #rr = client.read_holding_registers(104, 2, 21)
         #print("meter21 = ", rr.registers)
-        print(f"Reading meter 21, voltage {meter21_voltage}, current {meter21_current}, power {meter21_power}")
         
-        #meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
-        #meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
-        #meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
+        meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
+        meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
+        meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
         meter_83_entry = ("DCmeter_83",meter83_voltage, meter83_current,meter83_power)
-        #print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
+        print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
 
-        #meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
-        #meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
-        #meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
-        #print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
+        meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
+        meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
+        meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
         meter_57_entry = ("DCmeter_57",meter57_voltage, meter57_current,meter57_power)
+        print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
         #meter57 = client.read_holding_registers(start_address, 10 ,57) 
 
-        #meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
-        #meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
-        #meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
+        meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
+        meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
+        meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
         meter_26_entry = ("DCmeter_26",meter26_voltage, meter26_current,meter26_power)
-        #print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
+        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
         #        meter26 = client.read_holding_registers(start_address, 10 ,26) 
 
-        # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
-        #student_meter_voltage1 = client.read_holding_registers(3, 2, 3)
-        #print(student_meter_voltage1,"some garbage DC value, just for tests")
         
         print("All DC meters are done")
+        #the new AC meter 
+        meter_AC_test = client.read_holding_registers(1, 8, 1)
+        
         return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry) 
-#       AC meters 
-        #AC meter has baudrate 9600 and slave id 50 
-
-        #meter50_voltage = client.read_holding_registers(6, 2, 50)
-        #print(meter50_voltage,"some garbage AC value, just for tests")
         
         
 

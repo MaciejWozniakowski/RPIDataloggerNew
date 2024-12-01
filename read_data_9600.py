@@ -1,61 +1,112 @@
+#from pymodbus.client import ModbusSerialClient
 import struct 
 from pymodbus.exceptions import ModbusIOException
-import pymodbus.client as ModbusClient
+from pymodbus.client import ModbusTcpClient
 #from pymodbus.transaction import ModbusSocketFramer  
 from pymodbus import (
     ExceptionResponse,
-    FramerType,
+    #FramerType,
     ModbusException,
     pymodbus_apply_logging_config,
 ) 
-import time 
-
-framer = FramerType.SOCKET
-port1 = "/dev/ttyAMA3" 
-port2 = "/dev/ttyAMA5"
-client = ModbusClient.ModbusSerialClient(
-            port1,
-            framer=framer,
-            # timeout=10,
-            # retries=3,
-            baudrate=9600,
-            bytesize=8,
-            parity="N",
-            stopbits=1,
-            # handle_local_echo=False,
-        )
 
 
-student_voltage_RMS_address1 = 2 # also 3 
-student_current_RMS_address1 = 4  
-student_active_power_address1 = 8
-student_EnergyCH1_address1 = 15 #also 16
-student_QCH1_address1 = 11 # also 12 
+#combines MSW and LSW into real desired float value of 
+#values gathered from the student meter each require different encoding
+#hence the functions below
 
-student_voltage_RMS_address2 = 5 #also 6 
-student_current_RMS_address2 = 7  
-student_active_power_address2 = 9  
-student_EnergyCH2_address2 = 17 #also 18
-student_QCH2_address2 = 13 # also 14 
-#AC meter:
+def student_voltage_conversion_into_float(client, address, id):
+    #this needs debugging
 
-AC_voltage_phase_1neutral_address = 30001 
-AC_voltage_phase_2neutral_address =30003 
-AC_voltage_phase_3neutral_address = 30005 
-AC_current_phase_1_address = 30007
-AC_current_phase_2_address = 30009
-AC_current_phase_3_address = 30011
-#add other values to be stored 
+    readings = client.read_holding_registers(address,2 , id)
+    address1 = readings.registers[0]
+    address2 = readings.registers[2]
+    r = address1 & 0x3FF
+    s = address1 & 0x8000
+    m = address1 & 0x4000
+    d = address2
+    f = r + d/100 if d>0 else r
+    f = f if m == 0 else f/1000
+    return f if s == 0 else f*-1
 
-def run_client9600():
+def student_current_conversion_into_float(client, address, id):
+    readings = client.read_holding_registers(address, 1, id)
+    bin_value = readings.registers[0]
 
+    s = bin_value & 0x8000 # check sign 
+    m = bin_value & 0x4000 # check if mV or V, m stands for milli
+    f = (bin_value & 0x3FFF)/100
+    if(s == 1):
+        f = f* -1
+    if(m == 1):
+        f = f/1000
+    return f
+
+def student_active_power_conversion_into_float(client, address, id):
+    readings = client.read_holding_registers(address, 1, id)
+    binary_value = readings[0]
+    s = binary_value & 0x8000 #check sign
+    f = (binary_value & 0x3FFF)/10 # floating point value
+    if(s == 1):
+        f = f * -1
+    return f
+
+def run_and_read_client_9600():
+    default_gateway_ip = '10.0.10.'
+
+    server_port = 502
+
+    client = ModbusTcpClient(default_gateway_ip, port = server_port, 
+                             #framer = framer
+                             )
+
+    #start the client
     client.connect()
-    assert client.connected
+    #test if the client has been connnected 
+    assert client.connected 
+    print("Client connected")
+    #student made DC meter
+
+    student_voltage_RMS_address1 = 2 # also 3 
+    student_current_RMS_address1 = 4  
+    student_active_power_address1 = 8
+    student_EnergyCH1_address1 = 15 #also 16
+    student_QCH1_address1 = 11 # also 12 
+
+    student_voltage_RMS_address2 = 5 #also 6 
+    student_current_RMS_address2 = 7  
+    student_active_power_address2 = 9  
+    student_EnergyCH2_address2 = 17 #also 18
+    student_QCH2_address2 = 13 # also 14 
+
+
+
+
+
     try:
-        ## AC meter 
-        ac_reading = client.read_holding_registers(AC_current_phase_1_address, 2, 50)
-        ## student meter 
-        student_reading = client.read_holding_registers(student_voltage_RMS_address1, 2, 3)
-        print('ac_reading:', ac_reading,"student_reading", student_reading)
+
+        # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
+        student_meter_voltage1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
+        student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3) 
+        student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
+        student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
+        student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
+        student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
+
+        
+        student_meter_1_entry = ("DCmeter_3_1", student_meter_voltage1,student_meter_current1, student_meter_active_power_1)
+        student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2,student_meter_current2, student_meter_active_power_2)
+        return(student_meter_1_entry, student_meter_2_entry)
+        
+        
+
+            
     except ModbusException as exc:
-        print("Recieved exception", exc)
+        print(f"Recieved exception {exc}")
+        client.close()
+        
+
+
+
+
+
