@@ -105,7 +105,7 @@ def run_and_read_client_9600():
         print(f"Recieved exception {exc}")
         client.close()
         
-
+                
 
 
 
