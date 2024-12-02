@@ -90,13 +90,19 @@ def run_and_read_client_115200():
     student_QCH2_address2 = 13 # also 14 
     #AC meter:
 
-    AC_voltage_phase_1neutral_address = 30001 
-    AC_voltage_phase_2neutral_address =30003 
-    AC_voltage_phase_3neutral_address = 30005 
-    AC_current_phase_1_address = 30007
-    AC_current_phase_2_address = 30009
-    AC_current_phase_3_address = 30011
-    #add other values to be stored 
+    AC_voltage_phase_1neutral_address = 1 
+    AC_voltage_phase_2neutral_address =3 
+    AC_voltage_phase_3neutral_address = 5 
+    AC_current_phase_1_address = 13
+    AC_current_phase_2_address = 15
+    AC_current_phase_3_address = 17
+    AC_phase_1_power_address = 19
+    AC_phase_2_power_address = 21
+    AC_phase_3_power_address = 23
+    AC_frequency_grid_address = 52
+    AC_P_total_address = 41 
+    AC_Q_total_address = 45
+    AC_S_total_address = 43
 
 
 
@@ -146,8 +152,22 @@ def run_and_read_client_115200():
         print("All DC meters are done")
         #the new AC meter 
         meter_AC_test = client.read_holding_registers(1, 8, 1)
-        
-        return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry) 
+        AC_voltage_phase_1neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_1neutral_address,1)   
+        AC_voltage_phase_2neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_2neutral_address,1)   
+        AC_voltage_phase_3neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_3neutral_address,1)   
+        AC_current_1 = convert_MSW_and_LSW_into_float(client, AC_current_phase_1_address,1)   
+        AC_current_2 = convert_MSW_and_LSW_into_float(client, AC_current_phase_2_address,1)   
+        AC_current_3 = convert_MSW_and_LSW_into_float(client, AC_current_phase_3_address,1)   
+        AC_phase_1_power = convert_MSW_and_LSW_into_float(client, AC_phase_1_power_address, 1)
+        AC_phase_2_power = convert_MSW_and_LSW_into_float(client, AC_phase_2_power_address, 1)
+        AC_phase_3_power = convert_MSW_and_LSW_into_float(client, AC_phase_3_power_address, 1)
+        AC_frequency_grid = #this is only one word convert_MSW_and_LSW_into_float(client, AC_frequency_grid_address, 1)
+        AC_P_total = convert_MSW_and_LSW_into_float(client, AC_P_total_address, 1)
+        AC_Q_total = convert_MSW_and_LSW_into_float(client, AC_Q_total_address, 1)
+        AC_S_total = convert_MSW_and_LSW_into_float(client, AC_S_total_address, 1)
+        AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power, AC_frequency_grid, AC_P_total, AC_Q_total, AC_S_total)
+
+        return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
         
         
 

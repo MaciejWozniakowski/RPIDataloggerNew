@@ -13,7 +13,7 @@ def create_all_the_tables():
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_26 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_3_1 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_3_2 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
-        #connection.execute("CREATE TABLE IF NOT EXISTS ACmeter_50 (date TEXT PRIMARY KEY, U1Nrms REAL, U2Nrms REAL, U3Nrms REAL, I1rms REAL, I2rms REAL, I3rms REAL, P1rms REAL, P2rms REAL, P3rms REAL, Fgrid REAL, Ptotal REAL, Qtotal REAL, Stotal REAL);")
+        connection.execute("CREATE TABLE IF NOT EXISTS ACmeter (date TEXT PRIMARY KEY, U1Nrms REAL, U2Nrms REAL, U3Nrms REAL, I1rms REAL, I2rms REAL, I3rms REAL, P1rms REAL, P2rms REAL, P3rms REAL, Fgrid REAL, Ptotal REAL, Qtotal REAL, Stotal REAL);")
 
 # Sample data to insert (date, voltage, current, power)
 
@@ -35,10 +35,8 @@ def add_DC_data(meter,date, entry ): #this function adds entries to the database
     cursor.close()
     connection.close()
 
-def list_all_available_dates():
+def remove_entries_after_two_months(date1, date2):
     pass
-#    see how flutter queries .db
-
 meter = "DCmeter_89"
 date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 entry = (1.0, 1.0, 1.0) 

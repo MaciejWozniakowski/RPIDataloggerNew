@@ -91,6 +91,7 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
         const PopupMenuItem<String>(value: "DCmeter_57", child: Text("DCmeter_57")),
         const PopupMenuItem<String>(value: "DCmeter_3_1", child: Text("DCmeter_3_1")),
         const PopupMenuItem<String>(value: "DCmeter_3_2", child: Text("DCmeter_3_2")),
+        const PopupMenuItem<String>(value: "ACmeter", child: Text("ACmeter")),
       ],
     );
 
@@ -131,6 +132,15 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   onPressed: () => _pickDateTime(context, false),
                   child: Text(_selectedDateTime2),
                 ),
+                ElevatedButton( 
+                  onPressed:() {} ,
+                  child: const Text("Display data"),
+                ),
+                ElevatedButton( 
+                  onPressed:() {} ,
+                  child: const Text("Export to CSV"),
+                ),
+
               ],
             ),
           ),
