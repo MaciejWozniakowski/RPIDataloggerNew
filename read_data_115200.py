@@ -26,7 +26,7 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
 
 
 def run_and_read_client_115200():
-    default_gateway_ip = '10.0.10.50'
+    default_gateway_ip = '10.0.10.51'
 
     server_port = 502
     framer = FramerType.SOCKET
@@ -68,56 +68,47 @@ def run_and_read_client_115200():
 #       DC meters 
 #       For DC meters read only the Voltage RMS, Current RMS, Active Power, Total energy measurement, Status
 
-       # print(client.read_holding_registers(voltage_RMS_address, 2, 89))
+        #print("meter 89 ",client.read_holding_registers(voltage_RMS_address, 2, 89))
 
-        #meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
-        #meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
-        #meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
-        #meter_89_entry = ("DCmeter_89",meter89_voltage, meter89_current,meter89_power)
+        meter89_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 89)
+        meter89_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 89)
+        meter89_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 89)
+        meter_89_entry = ("DCmeter_89",meter89_voltage, meter89_current,meter89_power)
         #print(f"Reading meter 89, voltage {meter89_voltage}, current {meter89_current}, power {meter89_power}")
 
-      #  print(client.read_holding_registers(voltage_RMS_address, 2, 21))
+        #print("meter 21",client.read_holding_registers(voltage_RMS_address, 2, 21))
 
-        #meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
-        #meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
-        #meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)
-        #meter_21_entry = ("DCmeter_21",meter21_voltage, meter21_current,meter21_power)
+        meter21_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 21)
+        meter21_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 21)
+        meter21_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 21)
+        meter_21_entry = ("DCmeter_21",meter21_voltage, meter21_current,meter21_power)
         #print(f"Reading meter 21, voltage {meter21_voltage}, current {meter21_current}, power {meter21_power}")
-        rr = client.read_holding_registers(104, 2, 57)
-        print("meter21 = ", rr)
         
-      #  print(client.read_holding_registers(voltage_RMS_address, 2, 83))
-        #meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
-        #meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
-        #meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
-        #meter_83_entry = ("DCmeter_83",meter83_voltage, meter83_current,meter83_power)
+        meter83_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 83)
+        meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
+        meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
+        meter_83_entry = ("DCmeter_83",meter83_voltage, meter83_current,meter83_power)
         #print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
 
-      #  print(client.read_holding_registers(voltage_RMS_address, 2, 57))
 
-        #meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
-        #meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
-        #meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
-        #meter_57_entry = ("DCmeter_57",meter57_voltage, meter57_current,meter57_power)
+        meter57_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 57)
+        meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
+        meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
+        meter_57_entry = ("DCmeter_57",meter57_voltage, meter57_current,meter57_power)
         #print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
-        #meter57 = client.read_holding_registers(start_address, 10 ,57) 
 
-     #   print(client.read_holding_registers(voltage_RMS_address, 2, 21))
 
-        #meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
-        #meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
-        #meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
-        #meter_26_entry = ("DCmeter_26",meter26_voltage, meter26_current,meter26_power)
+        meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
+        meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
+        meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
+        meter_26_entry = ("DCmeter_26",meter26_voltage, meter26_current,meter26_power)
         #print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
-        #meter26 = client.read_holding_registers(104, 10 ,26) 
-        #print(meter26)
 
         
-        print("All DC meters are done")
         #the new AC meter 
-        #meter_AC_test = client.read_holding_registers(2, 8, 1)
-        #print(meter_AC_test)
+        #meter_AC_test = client.read_holding_registers(0, 2, 2)
+        #print("AC ",meter_AC_test)
         #AC_voltage_phase_1neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_1neutral_address,1)   
         #AC_voltage_phase_2neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_2neutral_address,1)   
         #AC_voltage_phase_3neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_3neutral_address,1)   
@@ -134,7 +125,7 @@ def run_and_read_client_115200():
         #AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power, AC_frequency_grid, AC_P_total, AC_Q_total, AC_S_total)
 
         #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
-        #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
+        return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
         
         
 
