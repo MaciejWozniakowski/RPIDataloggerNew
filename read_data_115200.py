@@ -26,7 +26,9 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
 
 
 def run_and_read_client_115200():
-    default_gateway_ip = '10.0.10.51'
+    #default_gateway_ip = '10.0.10.51'
+
+    default_gateway_ip = '10.0.10.52'
 
     server_port = 502
     framer = FramerType.SOCKET
@@ -37,7 +39,6 @@ def run_and_read_client_115200():
 
     client.connect()
     assert client.connected 
-    print("Client connected")
     #non student made DC meters 
     voltage_RMS_address = 104 # 139-142
     current_RMS_address = 106 # 143 - 146 
@@ -88,7 +89,7 @@ def run_and_read_client_115200():
         meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
         meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
         meter_83_entry = ("DCmeter_83",meter83_voltage, meter83_current,meter83_power)
-        #print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
+        print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
 
 
@@ -96,18 +97,19 @@ def run_and_read_client_115200():
         meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
         meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
         meter_57_entry = ("DCmeter_57",meter57_voltage, meter57_current,meter57_power)
-        #print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
+        print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
 
 
         meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
         meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
         meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
         meter_26_entry = ("DCmeter_26",meter26_voltage, meter26_current,meter26_power)
-        #print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
+        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
 
         
         #the new AC meter 
-        #meter_AC_test = client.read_holding_registers(0, 2, 2)
+        meter_AC_test = client.read_holding_registers(333, 2, 2)
+        print("AC ", meter_AC_test)
         #print("AC ",meter_AC_test)
         #AC_voltage_phase_1neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_1neutral_address,1)   
         #AC_voltage_phase_2neutral = convert_MSW_and_LSW_into_float(client, AC_voltage_phase_2neutral_address,1)   

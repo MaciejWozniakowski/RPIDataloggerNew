@@ -17,7 +17,6 @@ def main():
                 result = run_and_read_client_115200()
                 date_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 #result_student = run_and_read_client_9600() 
-                print("115200", result[0][0],date_now , result[1][1:])
                 #print("9600 result", result_student)
                 database.add_DC_data(result[0][0], date_now, result[0][1:])#data corresponding to meter 89
                 database.add_DC_data(result[1][0],date_now  , result[1][1:])#data corresponding to meter 21
@@ -43,10 +42,10 @@ def main():
                 cursor.close()
                 conn.close()
 
+                time.sleep(1)
 
             else:
                 database.create_all_the_tables()
-            time.sleep(1)
         except error: 
             print("sth wrong")
 
