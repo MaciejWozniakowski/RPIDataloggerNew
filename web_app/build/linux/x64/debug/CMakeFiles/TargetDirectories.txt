@@ -1,0 +1,14 @@
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/web_app.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/edit_cache.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/rebuild_cache.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/list_install_components.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/install.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/install/local.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/CMakeFiles/install/strip.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/flutter_assemble.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/edit_cache.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/rebuild_cache.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/list_install_components.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/install.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/install/local.dir
+/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/web_app/build/linux/x64/debug/flutter/CMakeFiles/install/strip.dir
