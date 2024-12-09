@@ -1,191 +1,175 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path/path.dart';
+Future  main() async {
 
-Future main() async{
   sqfliteFfiInit();
-  
   databaseFactory = databaseFactoryFfi;
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-Future<List<Map<String, dynamic>>> fetchData() async {
-  // Open database connection
-//  
-  final database = openDatabase(
-    join(await getDatabasesPath(), '../../data_from_all_meters.db'),
-  );
-
-  // Execute query
-  final db = await database;
-  return await db.query('your_table_name');
-}
-
-Future<DataTable> buildTable() async {
-  List<Map<String, dynamic>> queryResult = await fetchData();
-  List<DataRow> rows = queryResult.map((data) {
-    return DataRow(
-      cells: data.values.map((value) => DataCell(Text(value.toString()))).toList(),
-    );
-  }).toList();
-
-  return DataTable(
-    columns: queryResult.isEmpty
-        ? []
-        : queryResult.first.keys.map((key) => DataColumn(label: Text(key))).toList(),
-    rows: rows,
-  );
-}
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Datalogger Query Web App'),
-        ),
-        body: DateDropdowns(),
+      title: 'Datalogger Query App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const DateTimePickerButtons(),
     );
   }
 }
 
-class DateDropdowns extends StatefulWidget {
-  @override
-  _DateDropdownsState createState() => _DateDropdownsState();
+Future<void> openAndQueryDatabase(meter, start_date, end_date ) async {
+
+  // Step 2: Open or create the database
+  final database = await openDatabase("/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/data_from_all_meters.db");
+
+
+  // Step 4: Query the database
+  final List<Map<String, dynamic>> results = await database.query(
+    'meter',
+    where: 'timestamp BETWEEN ? AND ?',
+    whereArgs: [start_date, end_date],
+  );
+
+  // Step 4: Close the database
+  await database.close();
+
+  // Return the query results
+   print(results);
+
 }
 
-class _DateDropdownsState extends State<DateDropdowns> {
-  List<DateTime> dateList = [];
-  DateTime? selectedDate1;
-  DateTime? selectedDate2;
-  String? selectedMeter;
 
-  final List<String> meters = ["DCmeter_89", "DCmeter_21", "DCmeter_83", "DCmeter_57", "DCmeter_26", "DCmeter_3_1", "DCmeter_3_1", "ACmeter_50"];
+class DateTimePickerButtons extends StatefulWidget {
+  const DateTimePickerButtons({Key? key}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _generateDateList();
+  _DateTimePickerButtonsState createState() => _DateTimePickerButtonsState();
+}
+
+class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
+  String _selectedDateTime1 = "Select start date";
+  String _selectedDateTime2 = "Select end date";
+  String _dropdownValue = "Meter select";
+
+  Future<void> _pickDateTime(BuildContext context, bool isFirstButton) async {
+    // Step 1: Select Date
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      // Step 2: Select Time
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        // Combine date and time
+        final DateTime combinedDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        // Format date and time as string
+        setState(() {
+          if (isFirstButton) {
+            _selectedDateTime1 =
+                "${combinedDateTime.year}-${combinedDateTime.month.toString().padLeft(2, '0')}-${combinedDateTime.day.toString().padLeft(2, '0')} "
+                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}:${combinedDateTime.second.toString().padLeft(2, '0')}";
+          } else {
+            _selectedDateTime2 =
+                "${combinedDateTime.year}-${combinedDateTime.month.toString().padLeft(2, '0')}-${combinedDateTime.day.toString().padLeft(2, '0')} "
+                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}:${combinedDateTime.second.toString().padLeft(2, '0')}";
+          }
+        });
+      }
+    }
   }
 
-  void _generateDateList() {
-    DateTime today = DateTime.now();
-    for (int i = 0; i < 30; i++) {
-      dateList.add(today.add(Duration(days: i)));
+  Future<void> _showDropdown(BuildContext context) async {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final Offset buttonPosition = button.localToGlobal(Offset.zero);
+    final String? selectedValue = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        buttonPosition.dx,
+        buttonPosition.dy + button.size.height,
+        buttonPosition.dx + button.size.width,
+        buttonPosition.dy,
+      ),
+      items: <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(value: "DCmeter_89", child: Text("DCmeter_89")),
+        const PopupMenuItem<String>(value: "DCmeter_21", child: Text("DCmeter_21")),
+        const PopupMenuItem<String>(value: "DCmeter_83", child: Text("DCmeter_83")),
+        const PopupMenuItem<String>(value: "DCmeter_57", child: Text("DCmeter_57")),
+        const PopupMenuItem<String>(value: "DCmeter_3_1", child: Text("DCmeter_3_1")),
+        const PopupMenuItem<String>(value: "DCmeter_3_2", child: Text("DCmeter_3_2")),
+        const PopupMenuItem<String>(value: "ACmeter", child: Text("ACmeter")),
+      ],
+    );
+
+    if (selectedValue != null) {
+      setState(() {
+        _dropdownValue = selectedValue;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Datalogger Query App'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Meter Select"),
-              DropdownButton<String>(
-                value: selectedMeter,
-                items: meters.map((String meter) {
-                  return DropdownMenuItem<String>(
-                    value: meter,
-                    child: Text(meter, style: TextStyle(fontSize: 16)),
-                  );
-                }).toList(),
-                onChanged: (String? newMeter) {
-                  setState(() {
-                    selectedMeter = newMeter;
-                  });
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Select Start Date"),
-                  DropdownButton<DateTime>(
-                    value: selectedDate1,
-                    items: dateList.map((DateTime date) {
-                      return DropdownMenuItem<DateTime>(
-                        value: date,
-                        child: Text(
-                          "${date.day}/${date.month}/${date.year}",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (DateTime? newDate) {
-                      setState(() {
-                        selectedDate1 = newDate;
-                      });
-                    },
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Dropdown Elevated Button
+                Builder(
+                  builder: (context) => ElevatedButton(
+                    onPressed: () => _showDropdown(context),
+                    child: Text(_dropdownValue),
                   ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Select End Date"),
-                  DropdownButton<DateTime>(
-                    value: selectedDate2,
-                    items: dateList.map((DateTime date) {
-                      return DropdownMenuItem<DateTime>(
-                        value: date,
-                        child: Text(
-                          "${date.day}/${date.month}/${date.year}",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (DateTime? newDate) {
-                      setState(() {
-                        selectedDate2 = newDate;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          if (selectedDate1 != null && selectedDate2 != null)
-            Text(
-              "Selected Start Date: ${selectedDate1!.day}/${selectedDate1!.month}/${selectedDate1!.year}\n"
-              "Selected End Date: ${selectedDate2!.day}/${selectedDate2!.month}/${selectedDate2!.year}",
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          SizedBox(height: 20),
-          // Replacing placeholder with the DataTable
-          Expanded(
-            child: FutureBuilder<DataTable>(
-              future: buildTable(), // Call the buildTable function to fetch and display the table
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: snapshot.data!,
-                    ),
-                  );
-                } else {
-                  return const Center(child: Text('No data available'));
-                }
-              },
+                ),
+                // Date-Time Picker Buttons
+                ElevatedButton(
+                  onPressed: () => _pickDateTime(context, true),
+                  child: Text(_selectedDateTime1),
+                ),
+                ElevatedButton(
+                  onPressed: () => _pickDateTime(context, false),
+                  child: Text(_selectedDateTime2),
+                ),
+                ElevatedButton( 
+                  onPressed:() => openAndQueryDatabase(_dropdownValue, _selectedDateTime1, _selectedDateTime2) ,
+                  child: const Text("Display data"),
+                ),
+                ElevatedButton( 
+                  onPressed:() {} ,
+                  child: const Text("Export to CSV"),
+                ),
+
+              ],
             ),
           ),
         ],

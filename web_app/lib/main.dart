@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path/path.dart';
 
-void main() {
+Future<void> main() async {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   runApp(const MyApp());
 }
 
@@ -19,6 +24,35 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Future<void> openAndQueryDatabase(
+    String meter, String startDate, String endDate) async {
+  try {
+    // Open the database
+    final database = await openDatabase(
+        "/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/data_from_all_meters.db");
+    final formattedStartDate = startDate.trim();
+    final formattedEndDate = endDate.trim();
+
+    // Query the database
+    final List<Map<String, dynamic>> results = await database.query(
+      meter,
+      where: 'date BETWEEN ? AND ?',
+      whereArgs: [formattedStartDate, formattedEndDate],
+    );
+
+    // Print the query results
+    print('Results from table $meter:');
+    for (var row in results) {
+      print(row);
+    }
+
+    // Close the database
+    await database.close();
+  } catch (e) {
+    print('Error querying the database: $e');
+  }
+}
+
 class DateTimePickerButtons extends StatefulWidget {
   const DateTimePickerButtons({Key? key}) : super(key: key);
 
@@ -32,7 +66,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   String _dropdownValue = "Meter select";
 
   Future<void> _pickDateTime(BuildContext context, bool isFirstButton) async {
-    // Step 1: Select Date
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -41,14 +74,12 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
 
     if (pickedDate != null) {
-      // Step 2: Select Time
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
 
       if (pickedTime != null) {
-        // Combine date and time
         final DateTime combinedDateTime = DateTime(
           pickedDate.year,
           pickedDate.month,
@@ -57,7 +88,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           pickedTime.minute,
         );
 
-        // Format date and time as string
         setState(() {
           if (isFirstButton) {
             _selectedDateTime1 =
@@ -116,14 +146,12 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Dropdown Elevated Button
                 Builder(
                   builder: (context) => ElevatedButton(
                     onPressed: () => _showDropdown(context),
                     child: Text(_dropdownValue),
                   ),
                 ),
-                // Date-Time Picker Buttons
                 ElevatedButton(
                   onPressed: () => _pickDateTime(context, true),
                   child: Text(_selectedDateTime1),
@@ -132,15 +160,19 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   onPressed: () => _pickDateTime(context, false),
                   child: Text(_selectedDateTime2),
                 ),
-                ElevatedButton( 
-                  onPressed:() {} ,
+                ElevatedButton(
+                  onPressed: () {
+                    if (_dropdownValue != "Meter select" &&
+                        _selectedDateTime1 != "Select start date" &&
+                        _selectedDateTime2 != "Select end date") {
+                      openAndQueryDatabase(
+                          _dropdownValue, _selectedDateTime1, _selectedDateTime2);
+                    } else {
+                      print("Please select all values.");
+                    }
+                  },
                   child: const Text("Display data"),
                 ),
-                ElevatedButton( 
-                  onPressed:() {} ,
-                  child: const Text("Export to CSV"),
-                ),
-
               ],
             ),
           ),
@@ -149,4 +181,3 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 }
-
