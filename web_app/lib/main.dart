@@ -168,7 +168,15 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                       openAndQueryDatabase(
                           _dropdownValue, _selectedDateTime1, _selectedDateTime2);
                     } else {
-                      print("Please select all values.");
+                      showDialog(
+                        context: context,
+                        builder: (context){
+                          return AlertDialog(
+                            title: TextField(
+                              decoration:  const InputDecoration(hintText: "Please select all required values"),
+                            ),);
+                        },
+                      );
                     }
                   },
                   child: const Text("Display data"),
@@ -178,6 +186,8 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           ),
         ],
       ),
+      // tutaj chyba trzeba pokazywac to wszystko
     );
   }
 }
+
