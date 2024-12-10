@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 Future<void> main() async {
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
   runApp(const MyApp());
 }
 
@@ -27,32 +24,36 @@ class MyApp extends StatelessWidget {
 Future<void> openAndQueryDatabase(
     String meter, String startDate, String endDate) async {
   try {
-    // Open the database
-    final database = await openDatabase(
-        "/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/data_from_all_meters.db");
-    final formattedStartDate = startDate.trim();
-    final formattedEndDate = endDate.trim();
+    // Construct the API URL with parameters
+    final url = Uri.parse(
+        'http://127.0.0.1:5000/api/query?start_date=$startDate&end_date=$endDate');
 
-    // Query the database
-    final List<Map<String, dynamic>> results = await database.query(
-      meter,
-      where: 'date BETWEEN ? AND ?',
-      whereArgs: [formattedStartDate, formattedEndDate],
-    );
+    // Send a GET request to the API
+    final response = await http.get(url);
 
-    // Print the query results
-    print('Results from table $meter:');
-    for (var row in results) {
-      print(row);
+    if (response.statusCode == 200) {
+      // Parse the response if status code is OK
+      List<dynamic> responseData = json.decode(response.body);
+
+      if (responseData.isNotEmpty) {
+        // If data is returned, print the results
+        print('Query Results:');
+        for (var item in responseData) {
+          print(item);
+        }
+      } else {
+        // No data found
+        print('No data found for the given date range');
+      }
+    } else {
+      // Handle non-200 status codes
+      print('Failed to load data. Status code: ${response.statusCode}');
     }
-
-    // Close the database
-    await database.close();
   } catch (e) {
-    print('Error querying the database: $e');
+    // Handle any errors
+    print('Error: $e');
   }
 }
-
 class DateTimePickerButtons extends StatefulWidget {
   const DateTimePickerButtons({Key? key}) : super(key: key);
 
