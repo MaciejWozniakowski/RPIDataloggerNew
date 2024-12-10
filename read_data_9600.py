@@ -11,55 +11,47 @@ from pymodbus import (
 ) 
 
 
-#combines MSW and LSW into real desired float value of 
-#values gathered from the student meter each require different encoding
-#hence the functions below
+
+def student_voltage_conversion_into_float(client, address, id):
+    #this needs debugging
+
+    readings = client.read_holding_registers(address,2 , id)
+    address1 = readings.registers[0]
+    print("r1",bin(readings.registers[0]),"e2", bin(readings.registers[1]))
+    address2 = readings.registers[1]
+    r = address1 & 0x3FF 
+    s = address1 & 0x8000
+    m = address1 & 0x4000
+    d = address2 & 0x7F 
+
+    f = r + d / 100 if d > 0 else r  # Adds `d` divided by 100 to `r`, unless `d` is 0.
+    f = f if m == 0 else f / 1000  # Scales `f` down by 1000 if the 15th bit (`m`) is set.
+    
+    return f if s == 0 else f * -1  # Negates `f` if the 16th bit (`s`) is set (sign).
+
 
 #def student_voltage_conversion_into_float(client, address, id):
 #   #this needs debugging
 
 #   readings = client.read_holding_registers(address,2 , id)
-#   address1 = readings.registers[0]
-#   print("r1",readings.registers[0],"e2", readings.registers[1])
-#   address2 = readings.registers[1]
-#   r = address1 & 0x3FF 
-#   s = address1 & 0x8000
-#   m = address1 & 0x4000
-#   d = address2
-#   if(d>0):
-#       f = r + d/100
-#   else:
-#       f = r
-#   if(m == 0):
-#       f = f 
-#   else:
-#       f = f/1000
-#       #    f = r + d/100 if d>0 else r
-#    f = f if m == 0 else f/1000
-#   return f if s == 0 else f*-1
+#   register1 = readings.registers[0]
+#   register2 = readings.registers[1]
+#   sign_bit = (register1 >> 15) & 1  # Bit 15: sign
+#   unit_bit = (register1 >> 14) & 1  # Bit 14: unit indicator
+#   integer_part = (register1 >> 4) & 0x3FF  # Bits 4–13: integer part (10 bits)
+#   
+#   # Decode fractional part from the second register
+#   fractional_part = (register2 >> 1) & 0x7F  # Bits 1–7: fractional part (7 bits)
 
-def student_voltage_conversion_into_float(client, address, id):
-#   #this needs debugging
+#   # Calculate the final value
+#   sign = -1 if sign_bit else 1
+#   value = sign * (integer_part + fractional_part / 128.0)
 
-    readings = client.read_holding_registers(address,2 , id)
-    register1 = readings.registers[0]
-    register2 = readings.registers[1]
-    sign_bit = (register1 >> 15) & 1  # Bit 15: sign
-    unit_bit = (register1 >> 14) & 1  # Bit 14: unit indicator
-    integer_part = (register1 >> 4) & 0x3FF  # Bits 4–13: integer part (10 bits)
-    
-    # Decode fractional part from the second register
-    fractional_part = (register2 >> 1) & 0x7F  # Bits 1–7: fractional part (7 bits)
+#   # Apply unit scaling if the unit bit is set
+#   #if unit_bit:
+#   #    value *= 10
 
-    # Calculate the final value
-    sign = -1 if sign_bit else 1
-    value = sign * (integer_part + fractional_part / 128.0)
-
-    # Apply unit scaling if the unit bit is set
-    #if unit_bit:
-    #    value *= 10
-
-    return value
+#   return value
 
 def student_current_conversion_into_float(client, address, id):
     readings = client.read_holding_registers(address, 1, id)
@@ -70,7 +62,7 @@ def student_current_conversion_into_float(client, address, id):
     f = (bin_value & 0x3FFF)/100
     if(s == 1):
         f = f* -1
-    if(m == 1):
+    if(m != 0):
         f = f/1000
     return f
 
