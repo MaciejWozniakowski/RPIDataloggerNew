@@ -17,7 +17,7 @@ def student_voltage_conversion_into_float(client, address, id):
 
     readings = client.read_holding_registers(address,2 , id)
     address1 = readings.registers[0]
-    print("r1",bin(readings.registers[0]),"e2", bin(readings.registers[1]))
+    print("r1",bin(readings.registers[0]),"r2", bin(readings.registers[1]))
     address2 = readings.registers[1]
     r = address1 & 0x3FF 
     s = address1 & 0x8000
@@ -112,12 +112,12 @@ def run_and_read_client_9600():
         student_meter_voltage1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
         student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3) 
         print(student_meter_voltage1, student_meter_voltage2)
-        student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
+        #student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
         #student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
-        print(student_meter_current1)
-        student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
-        student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
-        print(student_meter_active_power_1, student_meter_active_power_2)
+        #print(student_meter_current1)
+        #student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
+        #student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
+        #print(student_meter_active_power_1, student_meter_active_power_2)
 
         
         #student_meter_1_entry = ("DCmeter_3_1", student_meter_voltage1,student_meter_current1, student_meter_active_power_1)
