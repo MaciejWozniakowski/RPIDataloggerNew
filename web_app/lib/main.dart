@@ -24,33 +24,26 @@ class MyApp extends StatelessWidget {
 Future<void> openAndQueryDatabase(
     String meter, String startDate, String endDate) async {
   try {
-    // Construct the API URL with parameters, including the meter name
     final url = Uri.parse(
         'http://127.0.0.1:5000/api/query?meter=$meter&start_date=$startDate&end_date=$endDate');
 
-    // Send a GET request to the API
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      // Parse the response if status code is OK
       List<dynamic> responseData = json.decode(response.body);
 
       if (responseData.isNotEmpty) {
-        // If data is returned, print the results
         print('Query Results:');
         for (var item in responseData) {
           print(item);
         }
       } else {
-        // No data found
         print('No data found for the given meter and date range');
       }
     } else {
-      // Handle non-200 status codes
       print('Failed to load data. Status code: ${response.statusCode}');
     }
   } catch (e) {
-    // Handle any errors
     print('Error: $e');
   }
 }

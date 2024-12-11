@@ -27,15 +27,22 @@ def add_DC_data(meter,date, entry ): #this function adds entries to the database
     cursor.execute(query, (date, entry[0], entry[1], entry[2]))
 
 
-    # Commit the transaction to save changes
     connection.commit()
     read = cursor.execute(f"SELECT * FROM {meter}")
-    # Close the cursor and connection
     cursor.close()
     connection.close()
 
-def remove_entries_after_two_months(date1, date2):
-    pass
+def add_AC_data(meter,date, entry ):      
+    connection = sqlite3.connect("data_from_all_meters.db")
+    cursor = connection.cursor() 
+    query = f"INSERT INTO {meter} (date, voltage, current, power) VALUES (?, ?, ?, ?)"
+    cursor.execute(query, (date, entry[0], entry[1], entry[2], entry[3], entry[4] , entry[5], entry[6],entry[7], entry[8], entry[9], entry[10], entry[11], entry[12]))
+
+
+    connection.commit()
+    read = cursor.execute(f"SELECT * FROM {meter}")
+    cursor.close()
+    connection.close()
 #meter = "DCmeter_89"
 #date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 #entry = (1.0, 1.0, 1.0) 
