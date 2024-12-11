@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
 Future<void> openAndQueryDatabase(
     String meter, String startDate, String endDate) async {
   try {
-    // Construct the API URL with parameters
+    // Construct the API URL with parameters, including the meter name
     final url = Uri.parse(
-        'http://127.0.0.1:5000/api/query?start_date=$startDate&end_date=$endDate');
+        'http://127.0.0.1:5000/api/query?meter=$meter&start_date=$startDate&end_date=$endDate');
 
     // Send a GET request to the API
     final response = await http.get(url);
@@ -43,7 +43,7 @@ Future<void> openAndQueryDatabase(
         }
       } else {
         // No data found
-        print('No data found for the given date range');
+        print('No data found for the given meter and date range');
       }
     } else {
       // Handle non-200 status codes
@@ -54,6 +54,7 @@ Future<void> openAndQueryDatabase(
     print('Error: $e');
   }
 }
+
 class DateTimePickerButtons extends StatefulWidget {
   const DateTimePickerButtons({Key? key}) : super(key: key);
 
@@ -187,8 +188,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           ),
         ],
       ),
-      // tutaj chyba trzeba pokazywac to wszystko
     );
   }
 }
-
