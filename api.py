@@ -1,13 +1,15 @@
 import sqlite3
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 DB_PATH = '/home/MaciejWozniakowski/programowanko/pythonProjects/RPIDataloggerNew/data_from_all_meters.db'
 
 def query_db(query, args=(), one=False):
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row  
+    conn.row_factory = sqlite3.Row  # This will return rows as dictionaries
     cur = conn.cursor()
     cur.execute(query, args)
     rv = cur.fetchall()

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:csv/csv.dart';
+
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -109,6 +111,7 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
 
       final response = await http.get(url);
+      print(response);
 
       if (response.statusCode == 200) {
         List<dynamic> responseData = json.decode(response.body);
@@ -140,6 +143,33 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 
+  Future<void> _downloadCSV() async {
+    if (_queryResults.isEmpty) {
+      _showErrorDialog("No data to download");
+      return;
+    }
+    String csv = '';
+    for(var row in _queryResults){
+      List<String> rowData = row.values.map((value) => value.toString()).toList();
+    csv += rowData.join(',') + '\n';
+  }
+    
+
+    final url = Uri.dataFromString(csv, mimeType: 'text/csv');
+
+    http.get(url).then((response) {
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('CSV file downloaded successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        _showErrorDialog('Failed to download CSV file.');
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,7 +211,7 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   child: const Text("Display data"),
                 ),
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: () => _downloadCSV(),
 
                   child: const Text("Download as CSV")
                 )
@@ -210,3 +240,5 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 }
+
+
