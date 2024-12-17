@@ -104,18 +104,40 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   }
 
   Future<void> _fetchAndDisplayData() async {
-    final url = Uri.parse(
-        'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
+    try {
+      final url = Uri.parse(
+          'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
 
-    final response = await http.get(url);
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> responseData = json.decode(response.body);
 
-      setState(() {
-        _queryResults = responseData; // Update state with query results
-      });
+        setState(() {
+          _queryResults = responseData; // Update state with query results
+        });
+      } else {
+        _showErrorDialog("Failed to load data. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      _showErrorDialog("Error: $e");
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -147,9 +169,22 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   child: Text(_selectedDateTime2),
                 ),
                 ElevatedButton(
-                  onPressed: _fetchAndDisplayData,
+                  onPressed: () {
+                    if (_dropdownValue != "Meter select" &&
+                        _selectedDateTime1 != "Select start date" &&
+                        _selectedDateTime2 != "Select end date") {
+                      _fetchAndDisplayData();
+                    } else {
+                      _showErrorDialog("Please select all required values.");
+                    }
+                  },
                   child: const Text("Display data"),
                 ),
+                ElevatedButton(
+                  onPressed: (){},
+
+                  child: const Text("Download as CSV")
+                )
               ],
             ),
           ),
@@ -158,20 +193,16 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: _queryResults.first.keys
-                          .map<DataColumn>((key) => DataColumn(label: Text(key)))
-                          .toList(),
+                      columns: _queryResults.first.keys.map<DataColumn>((key) => DataColumn(label: Text(key))).toList(),
                       rows: _queryResults.map<DataRow>((item) {
                         return DataRow(
-                          cells: item.values
-                              .map<DataCell>((value) => DataCell(Text(value.toString())))
-                              .toList(),
+                          cells: item.values.map<DataCell>((value) => DataCell(Text(value.toString()))).toList(),
                         );
                       }).toList(),
                     ),
                   )
                 : const Center(
-                    child: Text("Select data"),
+                    child: Text("No data to display"),
                   ),
           ),
         ],
