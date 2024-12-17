@@ -21,33 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> openAndQueryDatabase(
-    String meter, String startDate, String endDate) async {
-  try {
-    final url = Uri.parse(
-        'http://127.0.0.1:5000/api/query?meter=$meter&start_date=$startDate&end_date=$endDate');
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      List<dynamic> responseData = json.decode(response.body);
-
-      if (responseData.isNotEmpty) {
-        print('Query Results:');
-        for (var item in responseData) {
-          print(item);
-        }
-      } else {
-        print('No data found for the given meter and date range');
-      }
-    } else {
-      print('Failed to load data. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error: $e');
-  }
-}
-
 class DateTimePickerButtons extends StatefulWidget {
   const DateTimePickerButtons({Key? key}) : super(key: key);
 
@@ -59,6 +32,9 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   String _selectedDateTime1 = "Select start date";
   String _selectedDateTime2 = "Select end date";
   String _dropdownValue = "Meter select";
+
+  // State variable for holding query results
+  List<dynamic> _queryResults = [];
 
   Future<void> _pickDateTime(BuildContext context, bool isFirstButton) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -87,11 +63,11 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           if (isFirstButton) {
             _selectedDateTime1 =
                 "${combinedDateTime.year}-${combinedDateTime.month.toString().padLeft(2, '0')}-${combinedDateTime.day.toString().padLeft(2, '0')} "
-                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}:${combinedDateTime.second.toString().padLeft(2, '0')}";
+                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}";
           } else {
             _selectedDateTime2 =
                 "${combinedDateTime.year}-${combinedDateTime.month.toString().padLeft(2, '0')}-${combinedDateTime.day.toString().padLeft(2, '0')} "
-                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}:${combinedDateTime.second.toString().padLeft(2, '0')}";
+                "${combinedDateTime.hour.toString().padLeft(2, '0')}:${combinedDateTime.minute.toString().padLeft(2, '0')}";
           }
         });
       }
@@ -127,6 +103,21 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     }
   }
 
+  Future<void> _fetchAndDisplayData() async {
+    final url = Uri.parse(
+        'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List<dynamic> responseData = json.decode(response.body);
+
+      setState(() {
+        _queryResults = responseData; // Update state with query results
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,28 +147,32 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   child: Text(_selectedDateTime2),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_dropdownValue != "Meter select" &&
-                        _selectedDateTime1 != "Select start date" &&
-                        _selectedDateTime2 != "Select end date") {
-                      openAndQueryDatabase(
-                          _dropdownValue, _selectedDateTime1, _selectedDateTime2);
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context){
-                          return AlertDialog(
-                            title: TextField(
-                              decoration:  const InputDecoration(hintText: "Please select all required values"),
-                            ),);
-                        },
-                      );
-                    }
-                  },
+                  onPressed: _fetchAndDisplayData,
                   child: const Text("Display data"),
                 ),
               ],
             ),
+          ),
+          Expanded(
+            child: _queryResults.isNotEmpty
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: _queryResults.first.keys
+                          .map<DataColumn>((key) => DataColumn(label: Text(key)))
+                          .toList(),
+                      rows: _queryResults.map<DataRow>((item) {
+                        return DataRow(
+                          cells: item.values
+                              .map<DataCell>((value) => DataCell(Text(value.toString())))
+                              .toList(),
+                        );
+                      }).toList(),
+                    ),
+                  )
+                : const Center(
+                    child: Text("Select data"),
+                  ),
           ),
         ],
       ),

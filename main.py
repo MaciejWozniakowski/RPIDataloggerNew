@@ -1,5 +1,4 @@
 from os import error
-import sqlite3
 from read_data_115200 import run_and_read_client_115200
 from read_data_9600 import run_and_read_client_9600
 import database
