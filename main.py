@@ -25,7 +25,7 @@ def main():
                 database.add_DC_data(result115200[2][0], date_now, result115200[2][1:])#data corresponding to meter 83
                 database.add_DC_data(result115200[3][0], date_now, result115200[3][1:])#data corresponding to meter 57 
                 database.add_DC_data(result115200[4][0], date_now, result115200[4][1:])#data corresponding to meter 26 
-#                database.add_AC_data(result[5][0], date_now, result[5][1:])
+                database.add_AC_data(result115200[5][0], date_now, result115200[5][1:])
                 # data from the 9600 bus
                 database.add_DC_data(result9600[0][0], date_now, result9600[0][1:])#data corresponding to meter 26 
                 database.add_DC_data(result9600[1][0], date_now, result9600[1][1:])#data corresponding to meter 26 

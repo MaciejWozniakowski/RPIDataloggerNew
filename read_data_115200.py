@@ -23,19 +23,30 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
     MSW_and_LSW_combined = readings.registers[0] << 16 | readings.registers[1]
     result = struct.unpack('>f', struct.pack('>I', MSW_and_LSW_combined))[0]
     return result
+
 def convert_carlo_gavazzi(client, address, id):
     readings = client.read_holding_registers( address,2, id)
-    lsw = readings.registers[1] & 0xFFFF  # Mask to 16 bits
-    msw = readings.registers[0] & 0xFFFF  # Mask to 16 bits
+    lsw = readings.registers[1] & 0xFFFF  
+    msw = readings.registers[0] & 0xFFFF  
 
-    # Combine LSW and MSW in the order LSW -> MSW
     combined = (msw << 16) | lsw
 
-    # Convert to signed INT32 if necessary
     if combined >= 0x80000000:
         combined -= 0x100000000
 
     return combined/10
+
+def convert_carlo_gavazzi_current(client, address, id):
+    readings = client.read_holding_registers( address,2, id)
+    lsw = readings.registers[1] & 0xFFFF  
+    msw = readings.registers[0] & 0xFFFF  
+
+    combined = (msw << 16) | lsw
+
+    if combined >= 0x80000000:
+        combined -= 0x100000000
+
+    return combined/1000
 
 def run_and_read_client_115200():
     #default_gateway_ip = '10.0.10.51'
@@ -127,20 +138,20 @@ def run_and_read_client_115200():
         AC_voltage_phase_1neutral = convert_carlo_gavazzi(client, AC_voltage_phase_1neutral_address,2)   
         AC_voltage_phase_2neutral = convert_carlo_gavazzi(client, AC_voltage_phase_2neutral_address,2)   
         AC_voltage_phase_3neutral = convert_carlo_gavazzi(client, AC_voltage_phase_3neutral_address,2)   
-        AC_current_1 = convert_carlo_gavazzi(client, AC_current_phase_1_address,2)   
-        AC_current_2 = convert_carlo_gavazzi(client, AC_current_phase_2_address,2)   
-        AC_current_3 = convert_carlo_gavazzi(client, AC_current_phase_3_address,2)   
+        AC_current_1 = convert_carlo_gavazzi_current(client, AC_current_phase_1_address,2)   
+        AC_current_2 = convert_carlo_gavazzi_current(client, AC_current_phase_2_address,2)   
+        AC_current_3 = convert_carlo_gavazzi_current(client, AC_current_phase_3_address,2)   
         AC_phase_1_power = convert_carlo_gavazzi(client, AC_phase_1_power_address, 2)
         AC_phase_2_power = convert_carlo_gavazzi(client, AC_phase_2_power_address, 2)
         AC_phase_3_power = convert_carlo_gavazzi(client, AC_phase_3_power_address, 2)
-        AC_frequency_grid = client.read_holding_registers(AC_frequency_grid_address, 1, 2)  #this is only one word convert_MSW_and_LSW_into_float(client, AC_frequency_grid_address, 1)
+        AC_frequency_grid = client.read_holding_registers(AC_frequency_grid_address, 1, 2) /10  #this is only one word convert_MSW_and_LSW_into_float(client, AC_frequency_grid_address, 1)
         AC_P_total = convert_carlo_gavazzi(client, AC_P_total_address, 2)
         AC_Q_total = convert_carlo_gavazzi(client, AC_Q_total_address, 2)
         AC_S_total = convert_carlo_gavazzi(client, AC_S_total_address, 2)
         AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power,  AC_P_total, AC_Q_total, AC_S_total)
-        print(AC_meter_entry)
-        #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
-        return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
+        print("AC meter entry",AC_meter_entry)
+        return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
+        #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
         
         
 

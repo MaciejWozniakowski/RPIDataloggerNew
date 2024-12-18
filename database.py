@@ -19,7 +19,7 @@ def create_all_the_tables():
 
 # Insert data into DCmeter_89 table
 
-def add_DC_data(meter,date, entry ): #this function adds entries to the database 
+def add_DC_data(meter,date, entry): #this function adds entries to the database 
      
     connection = sqlite3.connect("data_from_all_meters.db")
     cursor = connection.cursor() 
@@ -28,23 +28,22 @@ def add_DC_data(meter,date, entry ): #this function adds entries to the database
 
 
     connection.commit()
-    read = cursor.execute(f"SELECT * FROM {meter}")
     cursor.close()
     connection.close()
 
-def add_AC_data(meter,date, entry ):      
+def add_AC_data(meter,date, entry):      
     connection = sqlite3.connect("data_from_all_meters.db")
     cursor = connection.cursor() 
-    query = f"INSERT INTO {meter} (date, voltage, current, power) VALUES (?, ?, ?, ?)"
+    query = f"INSERT INTO {meter} (date , U1Nrms , U2Nrms , U3Nrms , I1rms , I2rms , I3rms , P1rms , P2rms , P3rms , Fgrid , Ptotal , Qtotal , Stotal ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     cursor.execute(query, (date, entry[0], entry[1], entry[2], entry[3], entry[4] , entry[5], entry[6],entry[7], entry[8], entry[9], entry[10], entry[11], entry[12]))
 
 
     connection.commit()
-    read = cursor.execute(f"SELECT * FROM {meter}")
     cursor.close()
     connection.close()
-#meter = "DCmeter_89"
-#date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#entry = (1.0, 1.0, 1.0) 
-#add_DC_data(meter, date, entry)
+
+
+
+
+
 
