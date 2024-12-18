@@ -35,7 +35,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   String _selectedDateTime2 = "Select end date";
   String _dropdownValue = "Meter select";
 
-  // State variable for holding query results
   List<dynamic> _queryResults = [];
 
   Future<void> _pickDateTime(BuildContext context, bool isFirstButton) async {
@@ -117,7 +116,14 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
         List<dynamic> responseData = json.decode(response.body);
 
         setState(() {
-          _queryResults = responseData; // Update state with query results
+          // Ensure "date" is the first column in all records
+          _queryResults = responseData.map((row) {
+            final Map<String, dynamic> reorderedRow = {
+              if (row.containsKey('date')) 'date': row['date'],
+              ...row, // Add remaining keys in original order
+            };
+            return reorderedRow;
+          }).toList();
         });
       } else {
         _showErrorDialog("Failed to load data. Status code: ${response.statusCode}");
@@ -125,6 +131,46 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     } catch (e) {
       _showErrorDialog("Error: $e");
     }
+  }
+
+  Future<void> _downloadCSV() async {
+    if (_queryResults.isEmpty) {
+      _showErrorDialog("No data to download");
+      return;
+    }
+
+    // Ensure "date" is the first column
+    List<String> headers = (_queryResults.first as Map<String, dynamic>).keys.toList();
+    if (headers.contains('date')) {
+      headers.remove('date');
+      headers.insert(0, 'date');
+    }
+
+    // Reorder rows to match the header order
+    List<List<dynamic>> csvRows = [
+      headers, // Add headers as the first row
+      ..._queryResults.map((row) {
+        return headers.map((header) => row[header]).toList();
+      }).toList(),
+    ];
+
+    String csv = const ListToCsvConverter().convert(csvRows);
+
+    final blob = html.Blob([csv], 'text/csv');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..target = 'blank'
+      ..download = 'data.csv'
+      ..click();
+
+    html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('CSV file downloaded successfully!'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void _showErrorDialog(String message) {
@@ -142,37 +188,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
       ),
     );
   }
-
-
-  Future<void> _downloadCSV() async {
-    if (_queryResults.isEmpty) {
-      _showErrorDialog("No data to download");
-      return;
-    }
-
-  // Convert query results to CSV format
-    String csv = const ListToCsvConverter().convert(
-      _queryResults.map((row) => (row as Map<String, dynamic>).values.toList()).toList(),    );
-
-  // Create a Blob and use AnchorElement for downloading
-    final blob = html.Blob([csv], 'text/csv');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.AnchorElement(href: url)
-      ..target = 'blank'
-      ..download = 'data.csv'
-      ..click();
-
-  // Revoke the object URL to free up resources
-      html.Url.revokeObjectUrl(url);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('CSV file downloaded successfully!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -216,9 +231,8 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                 ),
                 ElevatedButton(
                   onPressed: () => _downloadCSV(),
-
-                  child: const Text("Download as CSV")
-                )
+                  child: const Text("Download as CSV"),
+                ),
               ],
             ),
           ),
@@ -227,10 +241,14 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: _queryResults.first.keys.map<DataColumn>((key) => DataColumn(label: Text(key))).toList(),
+                      columns: _queryResults.first.keys
+                          .map<DataColumn>((key) => DataColumn(label: Text(key)))
+                          .toList(),
                       rows: _queryResults.map<DataRow>((item) {
                         return DataRow(
-                          cells: item.values.map<DataCell>((value) => DataCell(Text(value.toString()))).toList(),
+                          cells: item.values
+                              .map<DataCell>((value) => DataCell(Text(value.toString())))
+                              .toList(),
                         );
                       }).toList(),
                     ),
@@ -244,5 +262,3 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 }
-
-

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:csv/csv.dart';
+import 'dart:html' as html;
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -33,7 +35,6 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   String _selectedDateTime2 = "Select end date";
   String _dropdownValue = "Meter select";
 
-  // State variable for holding query results
   List<dynamic> _queryResults = [];
 
   Future<void> _pickDateTime(BuildContext context, bool isFirstButton) async {
@@ -109,6 +110,7 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
           'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
 
       final response = await http.get(url);
+      print(response);
 
       if (response.statusCode == 200) {
         List<dynamic> responseData = json.decode(response.body);
@@ -139,6 +141,35 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
       ),
     );
   }
+
+
+  Future<void> _downloadCSV() async {
+    if (_queryResults.isEmpty) {
+      _showErrorDialog("No data to download");
+      return;
+    }
+    List<String> headers = (_queryResults.first as Map<String, dynamic>).keys.toList();
+
+    String csv = const ListToCsvConverter().convert([headers,
+      _queryResults.map((row) => (row as Map<String, dynamic>).values.toList()).toList(),] );
+
+    final blob = html.Blob([csv], 'text/csv');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..target = 'blank'
+      ..download = 'data.csv'
+      ..click();
+
+      html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('CSV file downloaded successfully!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +212,7 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                   child: const Text("Display data"),
                 ),
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: () => _downloadCSV(),
 
                   child: const Text("Download as CSV")
                 )
@@ -193,14 +224,10 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: _queryResults.first.keys
-                          .map<DataColumn>((key) => DataColumn(label: Text(key)))
-                          .toList(),
+                      columns: _queryResults.first.keys.map<DataColumn>((key) => DataColumn(label: Text(key))).toList(),
                       rows: _queryResults.map<DataRow>((item) {
                         return DataRow(
-                          cells: item.values
-                              .map<DataCell>((value) => DataCell(Text(value.toString())))
-                              .toList(),
+                          cells: item.values.map<DataCell>((value) => DataCell(Text(value.toString()))).toList(),
                         );
                       }).toList(),
                     ),
@@ -214,3 +241,5 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 }
+
+
