@@ -1,4 +1,7 @@
 #!/usr/bin bash
-source bin/activate
-python3 api.py 
+#systemctl start nginx
+
+#source bin/activate
+python3 api.py > api.log 2>&1 &
+disown
 python3 main.py

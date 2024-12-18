@@ -37,4 +37,4 @@ def get_data():
     else:
         return jsonify({"message": "No data found"}), 404
 
-#app.run(debug=True)
+app.run()
