@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:csv/csv.dart';
-
+import 'dart:html' as html;
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -143,33 +143,37 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
     );
   }
 
+
   Future<void> _downloadCSV() async {
     if (_queryResults.isEmpty) {
       _showErrorDialog("No data to download");
       return;
     }
-    String csv = '';
-    for(var row in _queryResults){
-      List<String> rowData = row.values.map((value) => value.toString()).toList();
-    csv += rowData.join(',') + '\n';
-  }
-    
 
-    final url = Uri.dataFromString(csv, mimeType: 'text/csv');
+  // Convert query results to CSV format
+    String csv = const ListToCsvConverter().convert(
+      _queryResults.map((row) => (row as Map<String, dynamic>).values.toList()).toList(),    );
 
-    http.get(url).then((response) {
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('CSV file downloaded successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        _showErrorDialog('Failed to download CSV file.');
-      }
-    });
+  // Create a Blob and use AnchorElement for downloading
+    final blob = html.Blob([csv], 'text/csv');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..target = 'blank'
+      ..download = 'data.csv'
+      ..click();
+
+  // Revoke the object URL to free up resources
+      html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('CSV file downloaded successfully!'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
