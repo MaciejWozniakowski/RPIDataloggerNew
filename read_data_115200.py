@@ -112,7 +112,7 @@ def run_and_read_client_115200():
         meter83_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 83)
         meter83_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 83)
         meter_83_entry = ("DCmeter_83",meter83_voltage, meter83_current,meter83_power)
-        print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
+        #print(f"Reading meter 83, voltage {meter83_voltage}, current {meter83_current}, power {meter83_power}")
 
 
 
@@ -120,16 +120,16 @@ def run_and_read_client_115200():
         meter57_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 57)
         meter57_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 57)
         meter_57_entry = ("DCmeter_57",meter57_voltage, meter57_current,meter57_power)
-        print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
+        #print(f"Reading meter 57, voltage {meter57_voltage}, current {meter57_current}, power {meter57_power}")
 
 
         meter26_voltage = convert_MSW_and_LSW_into_float(client, voltage_RMS_address, 26)
         meter26_current = convert_MSW_and_LSW_into_float(client, current_RMS_address, 26)
         meter26_power =  convert_MSW_and_LSW_into_float(client, active_power_address, 26)
         meter_26_entry = ("DCmeter_26",meter26_voltage, meter26_current,meter26_power)
-        print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
+        #print(f"Reading meter 26, voltage {meter26_voltage}, current {meter26_current}, power {meter26_power}")
         
-        print("Debug encoding carlo gavazzi:", convert_carlo_gavazzi(client, AC_voltage_phase_1neutral_address, 2))
+        #print("Debug encoding carlo gavazzi:", convert_carlo_gavazzi(client, AC_voltage_phase_1neutral_address, 2))
         
         #the new AC meter 
 #        meter_AC_test = client.read_holding_registers(333, 2, 2)
@@ -144,12 +144,13 @@ def run_and_read_client_115200():
         AC_phase_1_power = convert_carlo_gavazzi(client, AC_phase_1_power_address, 2)
         AC_phase_2_power = convert_carlo_gavazzi(client, AC_phase_2_power_address, 2)
         AC_phase_3_power = convert_carlo_gavazzi(client, AC_phase_3_power_address, 2)
-        AC_frequency_grid = client.read_holding_registers(AC_frequency_grid_address, 1, 2) /10  #this is only one word convert_MSW_and_LSW_into_float(client, AC_frequency_grid_address, 1)
+        f_grid = client.read_holding_registers(AC_frequency_grid_address, 1, 2)   
+        AC_frequency_grid = f_grid.registers[0]/10 
         AC_P_total = convert_carlo_gavazzi(client, AC_P_total_address, 2)
         AC_Q_total = convert_carlo_gavazzi(client, AC_Q_total_address, 2)
         AC_S_total = convert_carlo_gavazzi(client, AC_S_total_address, 2)
-        AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power,  AC_P_total, AC_Q_total, AC_S_total)
-        print("AC meter entry",AC_meter_entry)
+        AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power,AC_frequency_grid,  AC_P_total, AC_Q_total, AC_S_total)
+        #print("AC meter entry",AC_meter_entry)
         return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
         #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
         

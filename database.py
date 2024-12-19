@@ -35,6 +35,7 @@ def add_AC_data(meter,date, entry):
     connection = sqlite3.connect("data_from_all_meters.db")
     cursor = connection.cursor() 
     query = f"INSERT INTO {meter} (date , U1Nrms , U2Nrms , U3Nrms , I1rms , I2rms , I3rms , P1rms , P2rms , P3rms , Fgrid , Ptotal , Qtotal , Stotal ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    print(date, entry[0])
     cursor.execute(query, (date, entry[0], entry[1], entry[2], entry[3], entry[4] , entry[5], entry[6],entry[7], entry[8], entry[9], entry[10], entry[11], entry[12]))
 
 

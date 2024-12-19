@@ -15,9 +15,8 @@ from pymodbus import (
 def student_voltage_conversion_into_float(client, address, id):
     #this needs debugging
 
-    readings = client.read_holding_registers(address,2 , id)
+    readings = client.read_holding_registers(address, 2, id)
     address1 = readings.registers[0]
-    print("r1",bin(readings.registers[0]),"r2", bin(readings.registers[1]))
     address2 = readings.registers[1]
     r = address1 & 0x3FF 
     s = address1 & 0x8000
@@ -28,30 +27,6 @@ def student_voltage_conversion_into_float(client, address, id):
     f = f if m == 0 else f / 1000  # Scales `f` down by 1000 if the 15th bit (`m`) is set.
     
     return f if s == 0 else f * -1  # Negates `f` if the 16th bit (`s`) is set (sign).
-
-
-#def student_voltage_conversion_into_float(client, address, id):
-#   #this needs debugging
-
-#   readings = client.read_holding_registers(address,2 , id)
-#   register1 = readings.registers[0]
-#   register2 = readings.registers[1]
-#   sign_bit = (register1 >> 15) & 1  # Bit 15: sign
-#   unit_bit = (register1 >> 14) & 1  # Bit 14: unit indicator
-#   integer_part = (register1 >> 4) & 0x3FF  # Bits 4–13: integer part (10 bits)
-#   
-#   # Decode fractional part from the second register
-#   fractional_part = (register2 >> 1) & 0x7F  # Bits 1–7: fractional part (7 bits)
-
-#   # Calculate the final value
-#   sign = -1 if sign_bit else 1
-#   value = sign * (integer_part + fractional_part / 128.0)
-
-#   # Apply unit scaling if the unit bit is set
-#   #if unit_bit:
-#   #    value *= 10
-
-#   return value
 
 def student_current_conversion_into_float(client, address, id):
     readings = client.read_holding_registers(address, 1, id)
@@ -68,7 +43,7 @@ def student_current_conversion_into_float(client, address, id):
 
 def student_active_power_conversion_into_float(client, address, id):
     readings = client.read_holding_registers(address, 1, id)
-    binary_value = readings[0]
+    binary_value = readings.registers[0]
     s = binary_value & 0x8000 #check sign
     f = (binary_value & 0x3FFF)/10 # floating point value
     if(s == 1):
@@ -84,11 +59,8 @@ def run_and_read_client_9600():
                              #framer = framer
                              )
 
-    #start the client
     client.connect()
-    #test if the client has been connnected 
     assert client.connected 
-    #student made DC meter
 
     student_voltage_RMS_address1 = 2 # also 3 
     student_current_RMS_address1 = 4  
@@ -110,21 +82,22 @@ def run_and_read_client_9600():
 
         # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
         student_meter_voltage1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
-        student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3) 
-        print(student_meter_voltage1, student_meter_voltage2)
-        #student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
-        #student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
+        student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3)
+        #current =  client.read_holding_registers(student_current_RMS_address1, 1, 3)
+        #power = client.read_holding_registers(student_active_power_address1, 1, 3)
+        #print(current.registers[0], power.registers[0])
+        student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
+        student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
         #print(student_meter_current1)
-        #student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
-        #student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
-        #print(student_meter_active_power_1, student_meter_active_power_2)
+        student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
+        student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
 
         
-        #student_meter_1_entry = ("DCmeter_3_1", student_meter_voltage1,student_meter_current1, student_meter_active_power_1)
+        student_meter_1_entry = ("DCmeter_3_1", student_meter_voltage1,student_meter_current1, student_meter_active_power_1)
 
-        #student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2,student_meter_current2, student_meter_active_power_2)
-        #print(student_meter_1_entry)
-        #print(student_meter_2_entry)
+        student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2,student_meter_current2, student_meter_active_power_2)
+        print(student_meter_1_entry)
+        print(student_meter_2_entry)
         #return(student_meter_1_entry, student_meter_2_entry)
         
         

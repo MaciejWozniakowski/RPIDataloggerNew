@@ -107,7 +107,8 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   Future<void> _fetchAndDisplayData() async {
     try {
       final url = Uri.parse(
-          'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
+          //'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
+          'http://10.0.10.5:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
 
       final response = await http.get(url);
       print(response);
