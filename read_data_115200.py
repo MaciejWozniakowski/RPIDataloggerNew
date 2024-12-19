@@ -26,8 +26,8 @@ def convert_MSW_and_LSW_into_float(client ,address,  id):
 
 def convert_carlo_gavazzi(client, address, id):
     readings = client.read_holding_registers( address,2, id)
-    lsw = readings.registers[1] & 0xFFFF  
-    msw = readings.registers[0] & 0xFFFF  
+    lsw = readings.registers[0] & 0xFFFF  
+    msw = readings.registers[1] & 0xFFFF  
 
     combined = (msw << 16) | lsw
 
@@ -38,8 +38,8 @@ def convert_carlo_gavazzi(client, address, id):
 
 def convert_carlo_gavazzi_current(client, address, id):
     readings = client.read_holding_registers( address,2, id)
-    lsw = readings.registers[1] & 0xFFFF  
-    msw = readings.registers[0] & 0xFFFF  
+    lsw = readings.registers[0] & 0xFFFF  
+    msw = readings.registers[1] & 0xFFFF  
 
     combined = (msw << 16) | lsw
 
@@ -69,19 +69,23 @@ def run_and_read_client_115200():
 
     #AC meter:
 
-    AC_voltage_phase_1neutral_address = 1 
-    AC_voltage_phase_2neutral_address =3 
-    AC_voltage_phase_3neutral_address = 5 
-    AC_current_phase_1_address = 13
-    AC_current_phase_2_address = 15
-    AC_current_phase_3_address = 17
-    AC_phase_1_power_address = 19
-    AC_phase_2_power_address = 21
-    AC_phase_3_power_address = 23
-    AC_frequency_grid_address = 52
-    AC_P_total_address = 41 
-    AC_Q_total_address = 45
-    AC_S_total_address = 43
+    AC_voltage_phase_1neutral_address = 0 
+    AC_voltage_phase_2neutral_address =2
+    AC_voltage_phase_3neutral_address = 4 
+
+    AC_current_phase_1_address = 12
+    AC_current_phase_2_address = 14
+    AC_current_phase_3_address = 16
+
+    AC_phase_1_power_address = 18
+    AC_phase_2_power_address = 20
+    AC_phase_3_power_address = 22
+
+    AC_frequency_grid_address = 51
+
+    AC_P_total_address = 40 
+    AC_Q_total_address = 44
+    AC_S_total_address = 42
 
 
 
@@ -138,9 +142,11 @@ def run_and_read_client_115200():
         AC_voltage_phase_1neutral = convert_carlo_gavazzi(client, AC_voltage_phase_1neutral_address,2)   
         AC_voltage_phase_2neutral = convert_carlo_gavazzi(client, AC_voltage_phase_2neutral_address,2)   
         AC_voltage_phase_3neutral = convert_carlo_gavazzi(client, AC_voltage_phase_3neutral_address,2)   
+
         AC_current_1 = convert_carlo_gavazzi_current(client, AC_current_phase_1_address,2)   
         AC_current_2 = convert_carlo_gavazzi_current(client, AC_current_phase_2_address,2)   
-        AC_current_3 = convert_carlo_gavazzi_current(client, AC_current_phase_3_address,2)   
+        AC_current_3 = convert_carlo_gavazzi_current(client, AC_current_phase_3_address,2) 
+
         AC_phase_1_power = convert_carlo_gavazzi(client, AC_phase_1_power_address, 2)
         AC_phase_2_power = convert_carlo_gavazzi(client, AC_phase_2_power_address, 2)
         AC_phase_3_power = convert_carlo_gavazzi(client, AC_phase_3_power_address, 2)
