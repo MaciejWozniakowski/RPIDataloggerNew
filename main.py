@@ -13,7 +13,6 @@ def main():
             #
 
             if isfile('data_from_all_meters.db'):
-
                 result115200 = run_and_read_client_115200()
                 #result9600 = run_and_read_client_9600()
                 date_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
