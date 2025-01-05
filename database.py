@@ -51,6 +51,8 @@ def cleanup_old_entries():
         cursor.execute("DELETE FROM DCmeter_83 WHERE timestamp <= datetime('now', '-3 months')")
         cursor.execute("DELETE FROM DCmeter_57 WHERE timestamp <= datetime('now', '-3 months')")
         cursor.execute("DELETE FROM DCmeter_26 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_3_1 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_3_2 WHERE timestamp <= datetime('now', '-3 months')")
         cursor.execute("DELETE FROM ACmeter WHERE timestamp <= datetime('now', '-3 months')")  
         connection.commit()
         connection.close()
