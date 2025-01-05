@@ -2,6 +2,7 @@
 import struct 
 from pymodbus.exceptions import ModbusIOException
 from pymodbus.client import ModbusTcpClient
+import time
 #from pymodbus.transaction import ModbusSocketFramer  
 from pymodbus import (
     ExceptionResponse,
@@ -74,8 +75,7 @@ def run_and_read_client_9600():
     student_EnergyCH2_address2 = 17 #also 18
     student_QCH2_address2 = 13 # also 14 
 
-
-
+    delay = 0.01
 
 
     try:
@@ -83,25 +83,30 @@ def run_and_read_client_9600():
         ### IMPORTANT - RESEARCH HOW THIS METER CAN BE ACCESSED :
         ###
         # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
-        #student_meter_voltage1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
-        #student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
-        #student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3)
-        #student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
+        student_meter_voltage1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
+        time.sleep(delay)
+        student_meter_active_power_1 = student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
+        time.sleep(delay)
+        student_meter_voltage2 = student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3)
+        time.sleep(delay)
+        student_meter_active_power_2 = student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
+        time.sleep(delay)
         #current =  client.read_holding_registers(student_current_RMS_address1, 1, 3)
         #power = client.read_holding_registers(student_active_power_address1, 1, 3)
         #print(current.registers[0], power.registers[0])
         student_meter_current1 = student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
-        print(student_meter_current1)
-        #student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
+        time.sleep(delay)
+        #print(student_meter_current1)
+        student_meter_current2 = student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
         #print(student_meter_current1)
 
         
-        #student_meter_1_entry = ("DCmeter_3_1",student_meter_voltage1, student_meter_active_power_1)
+        student_meter_1_entry = ("DCmeter_3_1",student_meter_voltage1, student_meter_current1, student_meter_active_power_1)
 
-        #student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2, student_meter_active_power_2)
+        student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2, student_meter_current2, student_meter_active_power_2)
         #print(student_meter_1_entry)
         #print(student_meter_2_entry)
-        #return(student_meter_1_entry, student_meter_2_entry)
+        return(student_meter_1_entry, student_meter_2_entry)
         
         
 
