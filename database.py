@@ -42,6 +42,20 @@ def add_AC_data(meter,date, entry):
     cursor.close()
     connection.close()
 
+def cleanup_old_entries():
+    try:
+        connection = sqlite3.connect("data_from_all_meters.db")
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM DCmeter_89 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_21 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_83 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_57 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM DCmeter_26 WHERE timestamp <= datetime('now', '-3 months')")
+        cursor.execute("DELETE FROM ACmeter WHERE timestamp <= datetime('now', '-3 months')")  
+        connection.commit()
+        connection.close()
+    except Exception as e:
+        print(f"Error during cleanup: {e}")
 
 
 

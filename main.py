@@ -5,9 +5,10 @@ import database
 import time 
 import datetime
 from os.path import isfile
-start_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def main():
+    ctr = 0
+    
     while True:
         try:
             #
@@ -29,6 +30,10 @@ def main():
                 #database.add_DC_data(result9600[0][0], date_now, result9600[0][1:])#data corresponding to meter 26 
                 #database.add_DC_data(result9600[1][0], date_now, result9600[1][1:])#data corresponding to meter 26 
                 time.sleep(1)
+                ctr += 1
+                if ctr == 86399:
+                    database.cleanup_old_entries()
+                    ctr = 0
                 
 
             else:
