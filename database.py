@@ -13,8 +13,14 @@ def create_all_the_tables():
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_83 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_57 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_26 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
+        # STUDENT METERS - 9600 BUS
+        connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_2_1 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
+        connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_2_2 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_3_1 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
         connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_3_2 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
+        connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_4_1 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
+        connection.execute("CREATE TABLE IF NOT EXISTS DCmeter_4_2 (date TEXT PRIMARY KEY, voltage REAL, current REAL, power REAL);")
+        # AC METER 
         connection.execute("CREATE TABLE IF NOT EXISTS ACmeter (date TEXT PRIMARY KEY, U1Nrms REAL, U2Nrms REAL, U3Nrms REAL, I1rms REAL, I2rms REAL, I3rms REAL, P1rms REAL, P2rms REAL, P3rms REAL, Fgrid REAL, Ptotal REAL, Qtotal REAL, Stotal REAL);")
 
 # Sample data to insert (date, voltage, current, power)

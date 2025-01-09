@@ -96,28 +96,53 @@ async def run_and_read_client_9600():
 
     try:
         ###
-        ### IMPORTANT - RESEARCH HOW THIS METER CAN BE ACCESSED :
+        ### METER ID 2 
         ###
-        # first student meter has id of 3 and baudrate 9600, only holding registers 1-18 are accesible
-        student_meter_voltage1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 2 )
-        student_meter_active_power_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 2) 
-        student_meter_current1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 2) 
-        student_meter_voltage2 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 2)
-        student_meter_current2 = await student_current_conversion_into_float(client, student_current_RMS_address2, 2) 
-        student_meter_active_power_2 = await student_active_power_conversion_into_float(client, student_active_power_address2, 2) 
-        #current =  client.read_holding_registers(student_current_RMS_address1, 1, 3)
-        #power = client.read_holding_registers(student_active_power_address1, 1, 3)
-        #print(current.registers[0], power.registers[0])
-        #time.sleep(delay)
-        #print(student_meter_current1)
-        #print(student_meter_current1)
+        student_meter_voltage_2_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 2 )
+        student_meter_active_power_2_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 2) 
+        student_meter_current_2_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 2) 
+        student_meter_voltage_2_2 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 2)
+        student_meter_current_2_2 = await student_current_conversion_into_float(client, student_current_RMS_address2, 2) 
+        student_meter_active_power_2_2 = await student_active_power_conversion_into_float(client, student_active_power_address2, 2) 
 
         
-        student_meter_1_entry = ("DCmeter_3_1",student_meter_voltage1, student_meter_current1, student_meter_active_power_1)
-        student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2, student_meter_current2, student_meter_active_power_2)
-        print(student_meter_1_entry)
-        print(student_meter_2_entry)
-        return(student_meter_1_entry, student_meter_2_entry)
+        student_meter_2_1_entry = ("DCmeter_2_1",student_meter_voltage_2_1, student_meter_current_2_1, student_meter_active_power_2_1)
+        student_meter_2_2_entry = ("DCmeter_2_2",student_meter_voltage_2_2, student_meter_current_2_2, student_meter_active_power_2_2)
+        #print(student_meter_2_1_entry)
+        #print(student_meter_2_2_entry)
+        # 
+        #METER ID 3
+        #
+
+        student_meter_voltage_3_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
+        student_meter_active_power_3_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
+        student_meter_current_3_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
+        student_meter_voltage_3_2 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 3)
+        student_meter_current_3_2 = await student_current_conversion_into_float(client, student_current_RMS_address2, 3) 
+        student_meter_active_power_3_2 = await student_active_power_conversion_into_float(client, student_active_power_address2, 3) 
+
+        
+        student_meter_3_1_entry = ("DCmeter_3_1",student_meter_voltage_3_1, student_meter_current_3_1, student_meter_active_power_3_1)
+        student_meter_3_2_entry = ("DCmeter_3_2",student_meter_voltage_3_2, student_meter_current_3_2, student_meter_active_power_3_2)
+        #print(student_meter_3_1_entry)
+        #print(student_meter_3_2_entry)
+        # 
+        #METER ID 4
+        #
+
+        student_meter_voltage_4_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 4 )
+        student_meter_active_power_4_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 4) 
+        student_meter_current_4_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 4) 
+        student_meter_voltage_4_2 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address2, 4)
+        student_meter_current_4_2 = await student_current_conversion_into_float(client, student_current_RMS_address2, 4) 
+        student_meter_active_power_4_2 = await student_active_power_conversion_into_float(client, student_active_power_address2, 4) 
+
+        
+        student_meter_4_1_entry = ("DCmeter_4_1",student_meter_voltage_4_1, student_meter_current_4_1, student_meter_active_power_4_1)
+        student_meter_4_2_entry = ("DCmeter_4_2",student_meter_voltage_4_2, student_meter_current_4_2, student_meter_active_power_4_2)
+        #print(student_meter_4_1_entry)
+        #print(student_meter_4_2_entry)
+        return(student_meter_2_1_entry, student_meter_2_2_entry ,student_meter_3_1_entry, student_meter_3_2_entry, student_meter_4_1_entry, student_meter_4_2_entry)
     except asyncio.CancelledError:
         print("Cancelled")
         
