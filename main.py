@@ -1,11 +1,10 @@
 from os import error
 from read_data_115200 import run_and_read_client_115200
 #from async_read_data_9600 import run_and_read_client_9600
-from RS485_async_read_data_9600 import run_and_read_client_9600
+from RS485_sync_read_data_9600 import run_and_read_client_9600
 import database
 import time 
 import datetime
-import asyncio
 from os.path import isfile
 
 def main():
@@ -18,8 +17,8 @@ def main():
 
             if isfile('data_from_all_meters.db'):
                 result115200 = run_and_read_client_115200()
-                #result9600 = run_and_read_client_9600()
-                result9600 = asyncio.run(run_and_read_client_9600())
+                result9600 = run_and_read_client_9600()
+                #result9600 = asyncio.run(run_and_read_client_9600())
                 date_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # 
