@@ -113,6 +113,7 @@ async def run_and_read_client_9600():
         student_meter_2_entry = ("DCmeter_3_2",student_meter_voltage2, student_meter_current2, student_meter_active_power_2)
         #print(student_meter_1_entry)
         #print(student_meter_2_entry)
+        client.close()
         return(student_meter_1_entry, student_meter_2_entry)
     except asyncio.CancelledError:
         print("Cancelled")

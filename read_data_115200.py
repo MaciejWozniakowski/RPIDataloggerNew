@@ -165,6 +165,7 @@ def run_and_read_client_115200():
         AC_S_total = convert_carlo_gavazzi(client, AC_S_total_address, 2)
         AC_meter_entry = ("ACmeter", AC_voltage_phase_1neutral, AC_voltage_phase_2neutral, AC_voltage_phase_3neutral, AC_current_1, AC_current_2, AC_current_3, AC_phase_1_power,  AC_phase_2_power, AC_phase_3_power,AC_frequency_grid,  AC_P_total, AC_Q_total, AC_S_total)
         #print("AC meter entry",AC_meter_entry)
+        client.close()
         return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry, AC_meter_entry) 
         #return (meter_89_entry, meter_21_entry , meter_83_entry, meter_57_entry, meter_26_entry ) 
         

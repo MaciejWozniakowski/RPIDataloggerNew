@@ -4,6 +4,7 @@ from pymodbus.exceptions import ModbusIOException
 #from pymodbus.client import AsyncModbusTcpClient as ModbusTcpClient
 from pymodbus.client import AsyncModbusSerialClient
 import asyncio
+import time
 #from pymodbus.transaction import ModbusSocketFramer  
 from pymodbus import (
     ExceptionResponse,
@@ -66,8 +67,8 @@ async def student_active_power_conversion_into_float(client, address, id):
     except: 
         return None
 async def run_and_read_client_9600():
-    #    port = "/dev/ttyAMA3"
-    port = "/dev/ttyAMA5"
+    port = "/dev/ttyAMA3"
+    #port = "/dev/ttyAMA5"
 
     baudrate = 9600 
     parity = 'N'
@@ -78,7 +79,7 @@ async def run_and_read_client_9600():
                              )
 
     await client.connect()
-    assert client.connected 
+#    assert client.connected 
 
     student_voltage_RMS_address1 = 2 # also 3 
     student_current_RMS_address1 = 4  
@@ -98,6 +99,7 @@ async def run_and_read_client_9600():
         ###
         ### METER ID 2 
         ###
+        print("Meter 2 response")
         student_meter_voltage_2_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 2 )
         student_meter_active_power_2_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 2) 
         student_meter_current_2_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 2) 
@@ -108,12 +110,13 @@ async def run_and_read_client_9600():
         
         student_meter_2_1_entry = ("DCmeter_2_1",student_meter_voltage_2_1, student_meter_current_2_1, student_meter_active_power_2_1)
         student_meter_2_2_entry = ("DCmeter_2_2",student_meter_voltage_2_2, student_meter_current_2_2, student_meter_active_power_2_2)
-        #print(student_meter_2_1_entry)
-        #print(student_meter_2_2_entry)
+        print(student_meter_2_1_entry)
+        print(student_meter_2_2_entry)
         # 
         #METER ID 3
         #
 
+        print("Meter 3 response")
         student_meter_voltage_3_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
         student_meter_active_power_3_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
         student_meter_current_3_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
@@ -124,12 +127,13 @@ async def run_and_read_client_9600():
         
         student_meter_3_1_entry = ("DCmeter_3_1",student_meter_voltage_3_1, student_meter_current_3_1, student_meter_active_power_3_1)
         student_meter_3_2_entry = ("DCmeter_3_2",student_meter_voltage_3_2, student_meter_current_3_2, student_meter_active_power_3_2)
-        #print(student_meter_3_1_entry)
-        #print(student_meter_3_2_entry)
+        print(student_meter_3_1_entry)
+        print(student_meter_3_2_entry)
         # 
         #METER ID 4
         #
 
+        print("Meter 4 response")
         student_meter_voltage_4_1 = await student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 4 )
         student_meter_active_power_4_1 = await student_active_power_conversion_into_float(client, student_active_power_address1, 4) 
         student_meter_current_4_1 = await student_current_conversion_into_float(client, student_current_RMS_address1, 4) 
@@ -140,8 +144,8 @@ async def run_and_read_client_9600():
         
         student_meter_4_1_entry = ("DCmeter_4_1",student_meter_voltage_4_1, student_meter_current_4_1, student_meter_active_power_4_1)
         student_meter_4_2_entry = ("DCmeter_4_2",student_meter_voltage_4_2, student_meter_current_4_2, student_meter_active_power_4_2)
-        #print(student_meter_4_1_entry)
-        #print(student_meter_4_2_entry)
+        print(student_meter_4_1_entry)
+        print(student_meter_4_2_entry)
         return(student_meter_2_1_entry, student_meter_2_2_entry ,student_meter_3_1_entry, student_meter_3_2_entry, student_meter_4_1_entry, student_meter_4_2_entry)
     except asyncio.CancelledError:
         print("Cancelled")
@@ -154,7 +158,8 @@ async def run_and_read_client_9600():
         client.close()
         
                 
+while(True):
 
-asyncio.run(run_and_read_client_9600())
-
+    asyncio.run(run_and_read_client_9600())
+    time.sleep(1)
 
