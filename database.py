@@ -70,4 +70,4 @@ def cleanup_old_entries():
         connection.close()
     except Exception as e:
         print(f"Error during cleanup: {e}")
-#create_all_the_tables()
+create_all_the_tables()

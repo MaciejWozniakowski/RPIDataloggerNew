@@ -1,5 +1,5 @@
 from os import error
-from read_data_115200 import run_and_read_client_115200
+#from read_data_115200 import run_and_read_client_115200
 #from async_read_data_9600 import run_and_read_client_9600
 from RS485_sync_read_data_9600 import run_and_read_client_9600
 import database
@@ -22,23 +22,20 @@ def main():
                 date_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # 
-                #9600 METERS 
-                #
-                database.add_DC_data(result9600[0][0], date_now, result9600[0][1:])# meter 2_1
-                database.add_DC_data(result9600[1][0], date_now, result9600[1][1:])# meter 2_2
-                database.add_DC_data(result9600[2][0], date_now, result9600[2][1:])# meter 3_1                               
-                database.add_DC_data(result9600[3][0], date_now, result9600[3][1:])# meter 3_2
-                database.add_DC_data(result9600[4][0], date_now, result9600[4][1:])# meter 4_1                               
-                database.add_DC_data(result9600[5][0], date_now, result9600[5][1:])# meter 4_2
-                # 
                 #115200 METERS 
                 #
                 database.add_DC_data(result115200[0][0], date_now, result115200[0][1:])#data corresponding to meter 89
                 database.add_DC_data(result115200[1][0], date_now, result115200[1][1:])#data corresponding to meter 21
                 database.add_DC_data(result115200[2][0], date_now, result115200[2][1:])#data corresponding to meter 83
-                database.add_DC_data(result115200[3][0], date_now, result115200[3][1:])#data corresponding to meter 57 
                 database.add_DC_data(result115200[4][0], date_now, result115200[4][1:])#data corresponding to meter 26 
                 database.add_AC_data(result115200[5][0], date_now, result115200[5][1:])
+                # 
+                #9600 METERS 
+                #
+                database.add_DC_data(result9600[0][0], date_now, result9600[0][1:])# meter 2_1
+                database.add_DC_data(result9600[1][0], date_now, result9600[1][1:])# meter 2_2
+                database.add_DC_data(result9600[3][0], date_now, result9600[3][1:])# meter 3_2
+                database.add_DC_data(result9600[5][0], date_now, result9600[5][1:])# meter 4_2
                 time.sleep(1)
                 ctr += 1
                 print(ctr)

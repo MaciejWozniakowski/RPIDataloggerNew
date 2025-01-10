@@ -92,7 +92,6 @@ def run_and_read_client_9600():
         ###
         ### METER ID 2 
         ###
-        print("Meter 2 response")
         student_meter_voltage_2_1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 2 )
         student_meter_active_power_2_1 =  student_active_power_conversion_into_float(client, student_active_power_address1, 2) 
         student_meter_current_2_1 =  student_current_conversion_into_float(client, student_current_RMS_address1, 2) 
@@ -103,13 +102,10 @@ def run_and_read_client_9600():
         
         student_meter_2_1_entry = ("DCmeter_2_1",student_meter_voltage_2_1, student_meter_current_2_1, student_meter_active_power_2_1)
         student_meter_2_2_entry = ("DCmeter_2_2",student_meter_voltage_2_2, student_meter_current_2_2, student_meter_active_power_2_2)
-        print(student_meter_2_1_entry)
-        print(student_meter_2_2_entry)
         # 
         #METER ID 3
         #
 
-        print("Meter 3 response")
         student_meter_voltage_3_1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 3 )
         student_meter_active_power_3_1 =  student_active_power_conversion_into_float(client, student_active_power_address1, 3) 
         student_meter_current_3_1 =  student_current_conversion_into_float(client, student_current_RMS_address1, 3) 
@@ -120,13 +116,10 @@ def run_and_read_client_9600():
         
         student_meter_3_1_entry = ("DCmeter_3_1",student_meter_voltage_3_1, student_meter_current_3_1, student_meter_active_power_3_1)
         student_meter_3_2_entry = ("DCmeter_3_2",student_meter_voltage_3_2, student_meter_current_3_2, student_meter_active_power_3_2)
-        print(student_meter_3_1_entry)
-        print(student_meter_3_2_entry)
         # 
         #METER ID 4
         #
 
-        print("Meter 4 response")
         student_meter_voltage_4_1 =  student_voltage_conversion_into_float(client,student_voltage_RMS_address1, 4 )
         student_meter_active_power_4_1 =  student_active_power_conversion_into_float(client, student_active_power_address1, 4) 
         student_meter_current_4_1 =  student_current_conversion_into_float(client, student_current_RMS_address1, 4) 
@@ -137,8 +130,6 @@ def run_and_read_client_9600():
         
         student_meter_4_1_entry = ("DCmeter_4_1",student_meter_voltage_4_1, student_meter_current_4_1, student_meter_active_power_4_1)
         student_meter_4_2_entry = ("DCmeter_4_2",student_meter_voltage_4_2, student_meter_current_4_2, student_meter_active_power_4_2)
-        print(student_meter_4_1_entry)
-        print(student_meter_4_2_entry)
         client.close()
         return(student_meter_2_1_entry, student_meter_2_2_entry ,student_meter_3_1_entry, student_meter_3_2_entry, student_meter_4_1_entry, student_meter_4_2_entry)
         
@@ -149,8 +140,4 @@ def run_and_read_client_9600():
         print(f"Recieved exception {exc}")
         
                 
-while(True):
-
-    run_and_read_client_9600()
-    time.sleep(1)
 
