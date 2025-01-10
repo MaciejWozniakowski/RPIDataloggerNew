@@ -37,4 +37,4 @@ def get_data():
     else:
         return jsonify({"message": "No data found"}), 404
 
-app.run(host = "10.0.10.100", port = 5000 ,debug = True)
+app.run(host = "192.168.0.185", port = 5000 ,debug = True)
