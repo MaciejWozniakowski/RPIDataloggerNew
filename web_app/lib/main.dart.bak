@@ -107,21 +107,18 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
   Future<void> _fetchAndDisplayData() async {
     try {
       final url = Uri.parse(
-          //'http://127.0.0.1:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
           'http://10.0.10.5:5000/api/query?meter=$_dropdownValue&start_date=$_selectedDateTime1&end_date=$_selectedDateTime2');
 
       final response = await http.get(url);
-      print(response);
 
       if (response.statusCode == 200) {
         List<dynamic> responseData = json.decode(response.body);
 
         setState(() {
-          // Ensure "date" is the first column in all records
           _queryResults = responseData.map((row) {
             final Map<String, dynamic> reorderedRow = {
               if (row.containsKey('date')) 'date': row['date'],
-              ...row, // Add remaining keys in original order
+              ...row,
             };
             return reorderedRow;
           }).toList();
@@ -140,16 +137,14 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
       return;
     }
 
-    // Ensure "date" is the first column
     List<String> headers = (_queryResults.first as Map<String, dynamic>).keys.toList();
     if (headers.contains('date')) {
       headers.remove('date');
       headers.insert(0, 'date');
     }
 
-    // Reorder rows to match the header order
     List<List<dynamic>> csvRows = [
-      headers, // Add headers as the first row
+      headers,
       ..._queryResults.map((row) {
         return headers.map((header) => row[header]).toList();
       }).toList(),
@@ -241,17 +236,19 @@ class _DateTimePickerButtonsState extends State<DateTimePickerButtons> {
             child: _queryResults.isNotEmpty
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columns: _queryResults.first.keys
-                          .map<DataColumn>((key) => DataColumn(label: Text(key)))
-                          .toList(),
-                      rows: _queryResults.map<DataRow>((item) {
-                        return DataRow(
-                          cells: item.values
-                              .map<DataCell>((value) => DataCell(Text(value.toString())))
-                              .toList(),
-                        );
-                      }).toList(),
+                    child: SingleChildScrollView(
+                      child: DataTable(
+                        columns: _queryResults.first.keys
+                            .map<DataColumn>((key) => DataColumn(label: Text(key)))
+                            .toList(),
+                        rows: _queryResults.map<DataRow>((item) {
+                          return DataRow(
+                            cells: item.values
+                                .map<DataCell>((value) => DataCell(Text(value.toString())))
+                                .toList(),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   )
                 : const Center(

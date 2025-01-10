@@ -23,9 +23,6 @@ def create_all_the_tables():
         # AC METER 
         connection.execute("CREATE TABLE IF NOT EXISTS ACmeter (date TEXT PRIMARY KEY, U1Nrms REAL, U2Nrms REAL, U3Nrms REAL, I1rms REAL, I2rms REAL, I3rms REAL, P1rms REAL, P2rms REAL, P3rms REAL, Fgrid REAL, Ptotal REAL, Qtotal REAL, Stotal REAL);")
 
-# Sample data to insert (date, voltage, current, power)
-
-# Insert data into DCmeter_89 table
 
 def add_DC_data(meter,date, entry): #this function adds entries to the database 
      
