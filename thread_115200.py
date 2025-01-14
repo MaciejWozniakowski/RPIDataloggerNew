@@ -25,11 +25,10 @@ while True:
             database.add_AC_data(result115200[5][0], date_now, result115200[5][1:])
             time.sleep(1)
             ctr += 1
-            if ctr == (365*86400):
+            if ctr == (2678400):
                 print("Entered cleanup_old_entries")
                 database.cleanup_old_entries()
                 ctr = 1
-            
 
         else:
             database.create_all_the_tables()
