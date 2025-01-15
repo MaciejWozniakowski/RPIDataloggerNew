@@ -191,3 +191,11 @@ Traceback (most recent call last):
   File "/home/pwee/MaciejWozniakowskiDatalogger/temp/database.py", line 29, in add_DC_data
     cursor.execute(query, (date, entry[0], entry[1], entry[2]))
 sqlite3.IntegrityError: UNIQUE constraint failed: DCmeter_89.date
+Traceback (most recent call last):
+  File "/home/pwee/MaciejWozniakowskiDatalogger/temp/thread_115200.py", line 15, in <module>
+    result115200 = run_and_read_client_115200()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pwee/MaciejWozniakowskiDatalogger/temp/read_data_115200.py", line 162, in run_and_read_client_115200
+    AC_frequency_grid = f_grid.registers[0]/10 
+                        ^^^^^^^^^^^^^^^^
+AttributeError: 'ModbusIOException' object has no attribute 'registers'
