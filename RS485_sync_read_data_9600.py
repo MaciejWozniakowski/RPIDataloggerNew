@@ -14,24 +14,41 @@ from pymodbus import (
 
 
 
+#def student_voltage_conversion_into_float(client, address, id):
+#    #this needs debugging
+#    try:
+#        readings = client.read_holding_registers(address, 2, id)
+#        address1 = readings.registers[0]
+#        address2 = readings.registers[1]
+#        r = address1 & 0x3FF 
+#        s = address1 & 0x8000
+#        m = address1 & 0x4000
+#        d = address2 & 0x7F 
+#
+#        f = r + d / 100 if d > 0 else r  # Adds `d` divided by 100 to `r`, unless `d` is 0.
+#        f = f if m == 0 else f / 1000  # Scales `f` down by 1000 if the 15th bit (`m`) is set.
+#    
+#        return f if s == 0 else f * -1  # Negates `f` if the 16th bit (`s`) is set (sign).
+#    except:
+#        return None
+        
 def student_voltage_conversion_into_float(client, address, id):
-    #this needs debugging
     try:
         readings = client.read_holding_registers(address, 2, id)
         address1 = readings.registers[0]
         address2 = readings.registers[1]
-        r = address1 & 0x3FF 
-        s = address1 & 0x8000
-        m = address1 & 0x4000
-        d = address2 & 0x7F 
 
-        f = r + d / 100 if d > 0 else r  # Adds `d` divided by 100 to `r`, unless `d` is 0.
-        f = f if m == 0 else f / 1000  # Scales `f` down by 1000 if the 15th bit (`m`) is set.
-    
-        return f if s == 0 else f * -1  # Negates `f` if the 16th bit (`s`) is set (sign).
+        r = address1 & 0x3FF 
+        s = address1 & 0x8000 
+        m = address1 & 0x4000 
+        d = address2 
+        f = r + d/100 if d > 0 else r 
+        f = f if m == 0 else f/1000 
+        return f if s == 0 else f*-1 
     except:
         return None
-    
+
+
 def student_current_conversion_into_float(client, address, id):
     try:
         readings =  client.read_holding_registers(address, 1, id)
@@ -59,6 +76,8 @@ def student_active_power_conversion_into_float(client, address, id):
         return f
     except: 
         return None
+
+
 def run_and_read_client_9600():
     port = "/dev/ttyAMA3"
     #port = "/dev/ttyAMA5"
@@ -102,6 +121,7 @@ def run_and_read_client_9600():
         
         student_meter_2_1_entry = ("DCmeter_2_1",student_meter_voltage_2_1, student_meter_current_2_1, student_meter_active_power_2_1)
         student_meter_2_2_entry = ("DCmeter_2_2",student_meter_voltage_2_2, student_meter_current_2_2, student_meter_active_power_2_2)
+        print(student_meter_2_1_entry, student_meter_2_2_entry)
         # 
         #METER ID 3
         #
@@ -116,6 +136,7 @@ def run_and_read_client_9600():
         
         student_meter_3_1_entry = ("DCmeter_3_1",student_meter_voltage_3_1, student_meter_current_3_1, student_meter_active_power_3_1)
         student_meter_3_2_entry = ("DCmeter_3_2",student_meter_voltage_3_2, student_meter_current_3_2, student_meter_active_power_3_2)
+        print(student_meter_3_1_entry, student_meter_3_2_entry)
         # 
         #METER ID 4
         #
@@ -130,6 +151,7 @@ def run_and_read_client_9600():
         
         student_meter_4_1_entry = ("DCmeter_4_1",student_meter_voltage_4_1, student_meter_current_4_1, student_meter_active_power_4_1)
         student_meter_4_2_entry = ("DCmeter_4_2",student_meter_voltage_4_2, student_meter_current_4_2, student_meter_active_power_4_2)
+        print(student_meter_4_1_entry, student_meter_4_2_entry)
         client.close()
         return(student_meter_2_1_entry, student_meter_2_2_entry ,student_meter_3_1_entry, student_meter_3_2_entry, student_meter_4_1_entry, student_meter_4_2_entry)
         

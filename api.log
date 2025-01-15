@@ -3,19 +3,4 @@
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://10.0.10.7:5000
 [33mPress CTRL+C to quit[0m
-10.0.10.103 - - [15/Jan/2025 12:25:16] "GET /api/query?meter=DCmeter_3_1&start_date=2025-01-14%2012:17&end_date=2025-01-15%2012:17 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:27:15] "GET /api/query?meter=DCmeter_2_1&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:28:13] "GET /api/query?meter=DCmeter_83&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:28:31] "GET /api/query?meter=ACmeter&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.103 - - [15/Jan/2025 12:28:54] "GET /api/query?meter=ACmeter&start_date=2025-01-14%2012:17&end_date=2025-01-15%2012:17 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:29:06] "GET /api/query?meter=ACmeter&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:29:06] "GET /api/query?meter=ACmeter&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:29:28] "GET /api/query?meter=DCmeter_4_1&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:29:42] "GET /api/query?meter=ACmeter&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:30:28] "GET /api/query?meter=DCmeter_3_2&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:30:33] "GET /api/query?meter=DCmeter_3_2&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:30:59] "GET /api/query?meter=DCmeter_4_2&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:31:04] "GET /api/query?meter=DCmeter_4_1&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:31:08] "GET /api/query?meter=DCmeter_3_2&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:31:13] "GET /api/query?meter=DCmeter_3_1&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
-10.0.10.102 - - [15/Jan/2025 12:31:19] "GET /api/query?meter=DCmeter_2_2&start_date=2025-01-14%2012:27&end_date=2025-01-15%2012:27 HTTP/1.1" 200 -
+10.0.10.103 - - [15/Jan/2025 13:21:40] "GET /api/query?meter=DCmeter_4_2&start_date=2025-01-15%2013:11&end_date=2025-01-15%2013:13 HTTP/1.1" 200 -
