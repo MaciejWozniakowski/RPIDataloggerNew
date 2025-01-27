@@ -67,9 +67,9 @@ def run_and_read_client_115200():
     client = ModbusTcpClient(default_gateway_ip, port = server_port, 
                              framer = framer
                              )
-
+    
     client.connect()
-    assert client.connected 
+    #assert client.connected 
     #non student made DC meters 
     voltage_RMS_address = 104 # 139-142
     current_RMS_address = 106 # 143 - 146 

@@ -121,7 +121,7 @@ def run_and_read_client_9600():
         
         student_meter_2_1_entry = ("DCmeter_2_1",student_meter_voltage_2_1, student_meter_current_2_1, student_meter_active_power_2_1)
         student_meter_2_2_entry = ("DCmeter_2_2",student_meter_voltage_2_2, student_meter_current_2_2, student_meter_active_power_2_2)
-        print(student_meter_2_1_entry, student_meter_2_2_entry)
+        #print(student_meter_2_1_entry, student_meter_2_2_entry)
         # 
         #METER ID 3
         #
@@ -136,7 +136,7 @@ def run_and_read_client_9600():
         
         student_meter_3_1_entry = ("DCmeter_3_1",student_meter_voltage_3_1, student_meter_current_3_1, student_meter_active_power_3_1)
         student_meter_3_2_entry = ("DCmeter_3_2",student_meter_voltage_3_2, student_meter_current_3_2, student_meter_active_power_3_2)
-        print(student_meter_3_1_entry, student_meter_3_2_entry)
+        #print(student_meter_3_1_entry, student_meter_3_2_entry)
         # 
         #METER ID 4
         #
@@ -151,7 +151,7 @@ def run_and_read_client_9600():
         
         student_meter_4_1_entry = ("DCmeter_4_1",student_meter_voltage_4_1, student_meter_current_4_1, student_meter_active_power_4_1)
         student_meter_4_2_entry = ("DCmeter_4_2",student_meter_voltage_4_2, student_meter_current_4_2, student_meter_active_power_4_2)
-        print(student_meter_4_1_entry, student_meter_4_2_entry)
+        #print(student_meter_4_1_entry, student_meter_4_2_entry)
         client.close()
         return(student_meter_2_1_entry, student_meter_2_2_entry ,student_meter_3_1_entry, student_meter_3_2_entry, student_meter_4_1_entry, student_meter_4_2_entry)
         
